@@ -1,0 +1,115 @@
+<style lang="less">
+  @import "../../../asserts/style/commit";
+  @import "../../../asserts/style/form";
+
+  page {
+    background: #172029;
+  }
+
+  .pp-com-size {
+    /*height: 100%;*/
+  }
+
+  textarea {
+    height: ~"236rpx";
+  }
+
+</style>
+<template>
+  <view class="pp-commit">
+    <view class="pp-commit-img">
+      <image src="http://lmstore.oss-cn-shenzhen.aliyuncs.com/suggesstions/1527229047083.jpg"
+             class="pp-commit-img"></image>
+      <image src="../../../asserts/images/pic_mask_r.png" class="pp-mark-img"></image>
+      <view class="pp-com-form pp-com-size">
+        <view class="pp-enter-title">
+          预约申请
+        </view>
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">预约时间</text>
+          </view>
+          <view class="pp-input">
+            {{periodList[0].time}}  上午
+          </view>
+        </view>
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">联系人</text>
+          </view>
+          <view class="pp-input">
+            {{staff.name}}
+          </view>
+        </view>
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">手机号</text>
+          </view>
+          <view class="pp-input">
+            {{staff.phone}}
+          </view>
+        </view>
+        <view class="pp-cell" style="margin-top: 36rpx">
+          <view class="pp-label-area">
+            <view class="pp-area-text ">备注</view>
+          </view>
+          <textarea placeholder="点击输入…" placeholder-class="textarea"
+                    maxlength="140" bindinput="inputChange" id="question" style="margin-top: 20rpx"/>
+        </view>
+        <view class="pp-form-msg">
+          注意事项:请输入正确（申请信息），申请成功后，将有专业的客户经理电话联系您确认信息。
+        </view>
+        <view class='pp-btn pp-mb20' style="margin-top:  30rpx">
+          <veiw @tap="dealTask()" class="pp-btn-text pp-color">提交</veiw>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '物业报修'
+    };
+    components = {};
+
+    data = {
+      staff: {},
+      periodList: [] //预约时间
+    };
+
+    computed = {};
+
+    methods = {
+      //输入框变化
+      inputChange(e) {
+        let key = e.currentTarget.id;
+        this.params[key] = e.detail.value;
+        this.isClick = util.isCanNext(this.params);
+      },
+      //提交记录
+      dealTask() {
+
+      }
+
+    };
+
+    events = {};
+
+    onShow() {
+      this.staff = wx.getStorageSync('staff');
+    }
+
+    onLoad(params) {
+      this.periodList = JSON.parse(params.item);
+      console.log(this.periodList);
+    }
+
+  }
+</script>

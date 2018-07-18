@@ -1,0 +1,171 @@
+<style lang="less">
+  @import "../../../asserts/style/repair.less";
+
+  .join {
+    background: #FFFFFF;
+    margin-top: ~"20rpx";
+    padding: ~"25rpx" 0;
+    .join-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: ~"10rpx" ~"30rpx";
+      text-align: right;
+      text {
+        height: ~"28rpx";
+        line-height: ~"28rpx";
+      }
+    }
+  }
+
+  .join-state {
+    background: #FFFFFF;
+    height: ~"80rpx";
+    border-top: ~"1rpx" solid #e7e7e7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 ~"30rpx";
+    font-size: ~"28rpx";
+    color: #001422;
+    .oper {
+      width: ~"152rpx";
+      height: ~"50rpx";
+      border: ~"1rpx" solid #F53252;
+      border-radius: ~"4rpx";
+      font-size: ~"24rpx";
+      color: #F53252;
+      text-align: center;
+      line-height: ~"50rpx";
+    }
+    .yellow {
+      color: #75AE36;
+    }
+
+    .red {
+      color: #EB606A;
+    }
+
+    .gray {
+      color: #CBCBCB;
+    }
+
+  }
+
+</style>
+<template>
+  <ppTab :tabList.sync="tabList"></ppTab>
+  <repeat for="{{list}}" item="item" index="index">
+    <view class="join" @tap="toDetail('{{item}}')">
+      <view class="join-item">
+        <text>服务类型</text>
+        <text>{{item.addInfo.itemType}}</text>
+      </view>
+      <view class="join-item">
+        <text>下单时间</text>
+        <text>{{item.createTime}}</text>
+      </view>
+    </view>
+    <view class="join-state">
+      <view class="state-type">
+        <text>状态：</text>
+        <text class="red" wx:if="{{item.stage =='待拼单'}}">{{item.stage}}</text>
+        <text class="yellow" wx:if="{{item.stage =='已拼单'}}">{{item.stage}}</text>
+        <text class="gray" wx:if="{{item.stage =='已取消'}}">{{item.stage}}</text>
+      </view>
+      <view class="oper" wx:if="{{item.stage =='待拼单'}}" @tap="cancel('{{item}}')">取消拼单</view>
+    </view>
+  </repeat>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppTab from '../../../components/ppTab';
+  import api from '../../../api/homeApi';
+
+  import util from '../../../utils/util';
+
+  export default class Apply extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的拼单',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppTab: ppTab
+    };
+
+    data = {
+      tabList: [{
+        name: 'pxz',
+        title: '全部'
+      }, {
+        name: 'ppz',
+        title: '待拼单'
+      }, {
+        name: 'pzz',
+        title: '已拼单'
+      }
+      ],
+      list: [],
+      index:0
+    };
+
+    computed = {};
+
+    methods = {
+      //跳转到详情
+      toDetail(item) {
+        this.$navigate('./joinDetail', { item: JSON.stringify(item) });
+      },
+      cancel(item) {
+        let _self = this;
+        wx.showModal({
+          content: '确认取消拼单？',
+          success: function(res) {
+            if (res.confirm) {
+              let postData = item;
+              postData.stage = '已取消';
+              api.dealPropertyApplicationt(postData).then(res => {
+                util.toast('取消成功!');
+                _self.getList(_self.tabList[_self.index].title); //申请记录
+              });
+            }
+          }
+        });
+      }
+    };
+
+    events = {
+      tebClick(index) {
+        this.index = index;
+        this.getList(this.tabList[index].title);
+      }
+    };
+
+    onLoad(){
+      wx.showLoading({ title: '正在加载中......' });
+      this.getList('全部'); //申请记录
+    }
+    getList(type) {
+      let _self = this;
+      api.getSerInfo({ userId: wx.getStorageSync('userId'), type: '家政服务' }).then((res) => {
+        if (type === '全部') {
+          _self.list = res;
+        } else {
+          let list = res;
+          let tempList = [];
+          list.forEach(item => {
+            if (item.stage === type) {
+              tempList.push(item);
+            }
+          });
+          _self.list = tempList;
+        }
+        wx.hideLoading();
+        _self.$apply();
+      });
+    };
+  }
+</script>

@@ -1,0 +1,385 @@
+<style lang="less">
+  @import "../../../asserts/style/tab";
+
+  .slide-image {
+    width: ~"750rpx";
+    height: ~"353rpx";
+  }
+
+  .info {
+    width: ~"750rpx";
+    height: ~"353rpx";
+    background: #FFFFFF;
+    padding: 0 ~"40rpx";
+    .info-detail {
+      padding: ~"30rpx" 0 ~"56rpx";
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      .info-intro {
+        font-size: ~"36rpx";
+        color: #222222;
+      }
+      .info-location {
+        font-size: ~"24rpx";
+        color: #222222;
+        padding-top: ~"20rpx";
+      }
+    }
+    .info-content {
+      display: flex;
+      text-align: center;
+      .info-left {
+        flex: 1;
+        .left-value {
+          font-size: ~"48rpx";
+          color: #EB606A;
+          padding-top: ~"44rpx";
+        }
+        .left-key {
+          padding-top: ~"10rpx";
+          font-size: ~"22rpx";
+          color: #222222;
+        }
+      }
+    }
+  }
+
+  .tab {
+    margin-top: ~"20rpx";
+    margin-bottom: ~"130rpx";
+  }
+
+  .pp-tab__panel {
+    margin-top: 0;
+  }
+
+  .pp-navbar {
+    position: relative;
+    border-top: none;
+    border-bottom: ~"1rpx" solid #e7e7e7;
+  }
+
+  .pp-navbar__slider {
+    left: ~"168rpx";
+    background-color: #222222;
+  }
+
+  .detail {
+    height: ~"280rpx";
+    background: #FFFFFF;
+    padding: ~"50rpx" ~"40rpx";
+    .detail-item {
+      font-size: ~"24rpx";
+      color: #333333;
+      line-height: ~"36rpx";
+    }
+  }
+
+  .appoint {
+    height: ~"592rpx";
+    padding: 0 ~"20rpx";
+    background: #FFFFFF;
+    .appoint-item {
+      display: flex;
+      align-items: center;
+      .appoint-point {
+        background: #F4F4F4;
+        border: ~"2rpx" solid #FFFFFF;
+        text-align: center;
+        width: ~"50rpx";
+        height: ~"94rpx";
+        line-height: ~"28rpx";
+        justify-content: center;
+      }
+      .data-title {
+        background: #F4F4F4;
+        width: ~"95rpx";
+        height: ~"94rpx";
+        border: ~"2rpx" solid #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .data-am {
+        background: #F4F4F4;
+        width: ~"94rpx";
+        height: ~"94rpx";
+        border: ~"2rpx" solid #FFFFFF;
+        text-align: center;
+        line-height: ~"94rpx";
+      }
+      .data-pm {
+        background: #F4F4F4;
+        width: ~"94rpx";
+        height: ~"94rpx";
+        border: ~"2rpx" solid #FFFFFF;
+        text-align: center;
+        line-height: ~"94rpx";
+      }
+      .pointed {
+        color: #9B9B9B;
+      }
+      .choose {
+        background: #2C2C2C;
+        color: #FFFFFF;
+      }
+    }
+
+  }
+
+  .footer {
+    height: ~"108rpx";
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    .footer-left {
+      height: ~"108rpx";
+      width: ~"400rpx";
+      border-top: ~"1rpx" solid #e7e7e7;
+      display: flex;
+      .contact {
+        display: flex;
+        flex-direction: column;
+        padding-left: ~"54rpx";
+        font-size: ~"20rpx";
+        color: #222222;
+        .contact-img {
+          width: ~"40rpx";
+          height: ~"40rpx";
+          padding-top: ~"20rpx";
+          padding-bottom: ~"10rpx"
+        }
+      }
+    }
+    .footer-right {
+      height: ~"108rpx";
+      line-height: ~"108rpx";
+      width: ~"350rpx";
+      background: #C1A17B;
+      font-size: ~"30rpx";
+      text-align: center;
+      color: #FFFFFF;
+    }
+  }
+</style>
+<template>
+  <!--轮播图-->
+  <swiper indicator-dots="{{true}}"
+          autoplay="{{true}}" interval="{{5000}}" duration="{{1000}}">
+    <block wx:for="{{info.addInfo.images}}" wx:key="{{index}}">
+      <swiper-item>
+        <image src="{{item}}" class="slide-image" width="375" height="177"/>
+      </swiper-item>
+    </block>
+  </swiper>
+  <!--信息介绍-->
+  <view class="info">
+    <view class="info-detail">
+      <view class="info-intro">{{info.addInfo.intro}}</view>
+      <view class="info-location">地点：{{info.addInfo.location}}</view>
+    </view>
+    <view class="info-content">
+      <view class="info-left">
+        <view class="left-value">{{info.addInfo.rent}}</view>
+        <view class="left-key">租金(元/天)</view>
+      </view>
+      <view class="info-left">
+        <view class="left-value">{{info.addInfo.capacity}}</view>
+        <view class="left-key">容纳人数</view>
+      </view>
+      <view class="info-left">
+        <view class="left-value">{{info.addInfo.area}}</view>
+        <view class="left-key">面积(㎡)</view>
+      </view>
+    </view>
+  </view>
+  <!--详情-->
+  <view class="tab">
+    <view class="pp-tab">
+      <view class="pp-navbar">
+        <repeat for="{{tabList}}" index="index" item="item">
+          <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+                @tap="tabClick">
+            <view class="pp-navbar__title">{{item}}</view>
+          </view>
+        </repeat>
+        <view class="pp-navbar__slider"
+              style="transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+      </view>
+
+      <view class="pp-tab__panel">
+        <view class="pp-tab__content" hidden="{{activeIndex != 0}}">
+          <view class="appoint">
+            <view class="appoint-item">
+              <view class="appoint-left">
+                <view class="appoint-point"></view>
+                <view class="appoint-point">上午</view>
+                <view class="appoint-point">下午</view>
+              </view>
+              <repeat for="{{orderList}}" item="item" index="index">
+                <view class="appoint-data">
+                  <view class="data-title">
+                    <text>{{item.time}}</text>
+                    <text>{{item.week}}</text>
+                  </view>
+                  <view class="data-am {{item.am? 'pointed':item.amState?'choose':''}}"
+                        @tap="appoint('{{item}}','{{index}}','上午')">
+                    {{item.am? '已约':'预约'}}
+                  </view>
+                  <view class="data-pm {{item.am? 'pointed':item.pmState?'choose':''}}"
+                        @tap="appoint('{{item}}','{{index}}','下午')">
+                    {{item.am? '已约':'预约'}}
+                  </view>
+                </view>
+              </repeat>
+            </view>
+          </view>
+        </view>
+        <view class="pp-tab__content" hidden="{{activeIndex != 1}}">
+          <view class="detail">
+            <view class="detail-item">{{info.addInfo.intro}}</view>
+            <view class="detail-item">面积：{{info.addInfo.area}}m²</view>
+            <view class="detail-item">费用：{{info.addInfo.rent}}元/天</view>
+            <view class="detail-item">配套：{{info.addInfo.rent}}</view>
+            <view class="detail-item">提示：{{info.addInfo.prompt}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="footer">
+    <view class="footer-left">
+      <view class="contact">
+        <image src="/asserts/images/icon_dianhuazixun.png" class="contact-img"></image>
+        <text>咨询</text>
+      </view>
+      <view class="contact" @tap="clickCollect">
+        <!--icon_shoucang@2x  ixon_wodeshoucang@2x-->
+        <image src="{{showCollect?'/asserts/images/ixon_wodeshoucang@2x.png ':'/asserts/images/icon_shoucang@2x.png '}}"
+               class="contact-img"></image>
+        <text>收藏</text>
+      </view>
+    </view>
+    <view class="footer-right" @tap="apply">立即申请</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Apply extends wepy.page {
+    config = {
+      navigationBarTitleText: '详情',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      info: {},
+      tabList: ['预约', '详情'],
+      activeIndex: 0,
+      sliderOffset: 0,
+      showCollect: false,
+      orderList: [],
+      temList:[]
+    };
+
+    computed = {};
+
+    methods = {
+      //点击切换
+      tabClick(e) {
+        this.sliderOffset = e.currentTarget.offsetLeft;
+        this.activeIndex = e.currentTarget.id;
+      },
+      //点击收藏
+      clickCollect() {
+        this.showCollect = !this.showCollect;
+        let info = this.showCollect ? '收藏成功！' : '取消成功！';
+        util.toast(info);
+      },
+      //申请按钮
+      apply() {
+        if(this.getTempInfo().length === 0){
+          util.toast('请选择预约时间');
+          return;
+        }
+        this.$navigate('./apply',{item: JSON.stringify(this.getTempInfo())});
+      },
+      //点击预约
+      appoint(item, index, time) {
+        if (time === '上午') {
+          this.orderList[index].amState = !this.orderList[index].amState;
+        } else {
+          this.orderList[index].pmState = !this.orderList[index].pmState;
+        }
+        this.temList.push(this.orderList[index]);
+      }
+
+    };
+
+    events = {};
+
+    onLoad(params) {
+      this.info = JSON.parse(params.item);
+      // let _self = this;
+      // api.shareList({ type: '会议室' }).then((res) => {
+      //   _self.info = res[0];
+      //   _self.$apply();
+      // });
+      this.getAppointRecord();
+    }
+
+    //获取预约信息
+    getTempInfo(){
+      let list = [];
+      this.temList.forEach(item=>{
+        if(item.amState|| item.pmState){
+          list.push(item);
+        }
+      });
+      return list;
+    }
+
+    //组装信息
+    getOrderList(appoint) {
+      let array = appoint;
+      let list = [{}, {}, {}, {}, {}, {}, {}];
+      list.forEach((item, index) => {
+        item.time = util.recentlyDayToTime(index);
+        item.week = util.recentlyDayToWeek(index);
+        item.am = false;
+        item.amState = false;
+        item.pm = false;
+        item.pmState = false;
+        //与后台给的日期比较 数据转换
+        array.forEach((childItem) => {
+          if (childItem.useDate === item.time) {
+            if (childItem.period === '上午') {
+              item.am = true;
+            } else {
+              item.pm = true;
+            }
+          }
+        });
+        let tmplist = item.time.split('-');
+        item.time = tmplist[1] + '-' + tmplist[2];
+      });
+      this.orderList = list;
+      this.$apply();
+    };
+
+    //获取预约信息
+    getAppointRecord() {
+      api.sharedState({ id: '4d23db6e1e3b4c23b79a3f525eba9aa4' }).then(res => {
+        this.getOrderList(res);
+      });
+    };
+
+  }
+</script>

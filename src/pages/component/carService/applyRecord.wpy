@@ -1,0 +1,184 @@
+<style lang="less">
+  page {
+    background: #f4f4f4;
+  }
+
+  .pp-fee {
+    margin-top: ~"20rpx";
+    width: 100%;
+    height: ~"532rpx";
+    background: #FFFFFF;
+    .pp-fee-nav {
+      width: 100%;
+      height: ~"124rpx";
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 ~"40rpx";
+      .pp-fee-time {
+        .pp-time-name {
+          font-size:  ~"30rpx";
+          color: #333333;
+        }
+        .pp-time-size {
+          font-size:  ~"24rpx";
+          color: #222222;
+        }
+
+      }
+      .pp-pay {
+        font-size:  ~"30rpx";
+        color: #75AE36;
+
+        .pp-pay-text{
+          margin-right:  ~"20rpx";
+        }
+        .pp-pay-img {
+          vertical-align: middle;
+          width: ~"40rpx";
+          height: ~"40rpx";
+        }
+      }
+    }
+    .pp-fee-info{
+      width: 100%;
+      height:  ~"300rpx";
+      padding: ~"20rpx" ~"40rpx" ~"40rpx";
+      border-bottom:  ~"1rpx" solid #e7e7e7;
+      .pp-info-item{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size:  ~"28rpx";
+        color: #222222;
+        height:  ~"28rpx";
+        line-height:  ~"28rpx";
+        margin-top:  ~"20rpx";
+      }
+    }
+    .pp-fee-footer{
+      width: 100%;
+      height:  ~"108rpx";
+      display: flex;
+      justify-content: space-between;
+      padding: 0  ~"40rpx";
+      align-items: center;
+      font-size:  ~"28rpx";
+      .pp-fee-pay{
+        color: #222222;
+      }
+      .pp-fee-price{
+        color: #EB606A;
+      }
+    }
+  }
+</style>
+<template>
+
+  <repeat for="{{feeList}}" index="index" item="item">
+    <view class="pp-fee">
+      <view class="pp-fee-nav">
+        <view class="pp-fee-time">
+          <view class="pp-time-name">
+            缴费时间
+          </view>
+          <view class="pp-time-size">
+            {{item.time}}
+          </view>
+        </view>
+        <view class="pp-pay">
+          <text class="pp-pay-text">微信支付</text>
+          <image src="../../../asserts/images/icon_fenxiang_weixin.png" class="pp-pay-img"></image>
+        </view>
+      </view>
+      <view class="pp-fee-info">
+        <view class="pp-info-item">
+          <view class="pp-info-title">
+            车牌
+          </view>
+          <view class="pp-info-name">
+            {{item.carType}}
+          </view>
+        </view>
+        <view class="pp-info-item">
+          <view class="pp-info-title">
+            进场时间
+          </view>
+          <view class="pp-info-name">
+            {{item.time}}
+          </view>
+        </view>
+        <view class="pp-info-item">
+          <view class="pp-info-title">
+            出场时间
+          </view>
+          <view class="pp-info-name">
+            {{item.time}}
+          </view>
+        </view>
+        <view class="pp-info-item">
+          <view class="pp-info-title">
+            停车时长
+          </view>
+          <view class="pp-info-name">
+            {{item.time}}
+          </view>
+        </view>
+        <view class="pp-info-item">
+          <view class="pp-info-title">
+            折扣金额
+          </view>
+          <view class="pp-info-name">
+            {{item.discount}}
+          </view>
+        </view>
+      </view>
+      <view class="pp-fee-footer">
+        <view class="pp-fee-pay">
+          实际支付
+        </view>
+        <view class="pp-fee-price">
+          ¥ {{item.amount}}
+        </view>
+      </view>
+    </view>
+
+  </repeat>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi'
+
+  export default class ApplyRecord extends wepy.page {
+    config = {
+      navigationBarTitleText: '缴费记录'
+    };
+    components = {};
+
+    data = {
+      feeList: []
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+
+    onLoad() {
+      this.getFeeList();
+    }
+
+    getFeeList() {
+      api.querySerPay({}).then((res)=>{
+        console.log(res);
+        this.feeList = res;
+        this.$apply();
+
+      })
+    }
+  }
+</script>

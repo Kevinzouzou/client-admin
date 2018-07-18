@@ -1,0 +1,477 @@
+<style lang="less">
+  page {
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+
+  .pp-group {
+    background: #ffffff;
+    .pp-group-item {
+      height: ~"140rpx";
+      padding-left: ~"20rpx";
+      display: flex;
+      align-items: center;
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      .pp-group-icon {
+        width: ~"90rpx";
+        height: ~"90rpx";
+      }
+      .pp-text {
+        margin-left: ~"20rpx";
+        font-size: ~"32rpx";
+        color: #4A4A4A;
+      }
+    }
+  }
+
+  .pp-person {
+    .pp-letter {
+      width: 100%;
+      height: ~"40rpx";
+      padding-left: ~"30rpx";
+      font-size: ~"30rpx";
+      color: #2B2B2B;
+      line-height: ~"40rpx";
+    }
+    .pp-person-info {
+      width: 100%;
+      background: #ffffff;
+      padding: 0 ~"30rpx";
+      font-size: ~"30rpx";
+      .pp-person-item {
+        width: 100%;
+        height: ~"90rpx";
+        display: flex;
+        align-items: center;
+        border-bottom: ~"1rpx" solid #e7e7e7;
+        .pp-person-name {
+          font-size: ~"28rpx";
+          color: #2B2B2B;
+        }
+      }
+    }
+  }
+
+  .pp-person:last-child {
+    margin-top: ~"100rpx";
+  }
+
+  .task_btn .btn {
+    width: 90%;
+    background: #5F97F6;
+    color: #fff;
+    position: fixed;
+    bottom: ~"30rpx";
+    left: 5%;
+  }
+
+  .pp-search {
+    width: 100%;
+    height: ~"100rpx";
+    background: #FFFFFF;
+    position: fixed;
+    top: 0;
+    border-top: ~"1rpx" solid #e7e7e7;
+    z-index: 999;
+    .pp-search-bar {
+      width: ~"710rpx";
+      height: ~"58rpx";
+      margin: auto;
+      background: #F4F4F4;
+      border-radius: ~"4rpx";
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      .pp-search-icon {
+        margin-left: ~"27rpx";
+        margin-right: ~"16rpx";
+        width: ~"36rpx";
+        height: ~"36rpx";
+      }
+    }
+  }
+
+  .item-list {
+    position: relative;
+    width: 100%;
+    height: ~"90rpx";
+    line-height: ~"90rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+  }
+
+  .item-info {
+    width: 100%;
+    height: ~"89rpx";
+    position: absolute;
+    z-index: 3;
+    background: white;
+    transition: left 0.2s ease-in-out;
+    .name {
+      padding-left: ~"30rpx";
+      font-size: ~"30rpx";
+      padding-right: ~"20rpx";
+    }
+  }
+
+  .item-slide {
+    height: ~"89rpx";
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1;
+
+    .btn-manager {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #000000;
+      background: peachpuff;
+    }
+    .btn-delete {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      background: red;
+    }
+  }
+
+  .add {
+    margin-top: ~"100rpx";
+    height: ~"60rpx";
+    text-align: right;
+    padding-right: ~"40rpx";
+    line-height: ~"60rpx";
+    font-size: ~"28rpx";
+    color: #333333;
+    background: #FFFFFF;
+    border-bottom: ~"1rpx" solid #e7e7e7;
+  }
+</style>
+<template>
+  <view class="pp-search">
+    <view class="pp-search-bar">
+      <image src="../../../asserts/images/icon_sousuokuang_sousuo.png" class="pp-search-icon" mode="aspectFill"></image>
+      <input bindinput="bindSearch" placeholder="搜索" placeholder-class="input"/>
+    </view>
+  </view>
+  <view class="add" @tap="passToInfo('add')">
+    添加员工
+  </view>
+  <view class="pp-person">
+    <repeat for="{{ownList}}" item="item" index="index">
+      <view class="item-list">
+        <view class="item-info">
+          <text class="name">{{item.name}}</text><text>({{item.post}})</text>
+        </view>
+      </view>
+    </repeat>
+  </view>
+  <view class="pp-person" style="margin-top: 0">
+    <repeat for="{{otherList}}" item="item" index="index">
+      <view class="item-list" @tap="passToInfo('update','{{item}}')">
+        <view class="item-info" data-indexs="{{index}}"
+              bindtouchstart="touchSs"
+              bindtouchmove="touchMs"
+              bindtouchend="touchEs"
+              style="left:{{item.left + 'rpx'}}">
+          <text class="name">{{item.name}}</text><text>({{item.post}})</text>
+        </view>
+        <view class="item-slide" style="width: {{slideWidth+ 'rpx'}}">
+          <view class="btn-manager" catchtap="setManager" data-type="员工" data-user="{{item}}">
+            <text>取消管理员</text>
+          </view>
+          <view class="btn-delete" catchtap="itemDeletes" data-index="{{index}}"  data-id="{{item.id}}">
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </repeat>
+  </view>
+  <view class="pp-person" style="margin-top: 0">
+    <repeat for="{{contactlist}}" item="item" index="index">
+      <view class="pp-letter">
+        <text>{{item.letter}}</text>
+      </view>
+      <repeat for="{{item.data}}" item="childItem" index="childIndex">
+        <view class="item-list" catchtap="passToInfo('update','{{childItem}}')">
+          <view class="item-info" data-index="{{index}}" data-childIndex="{{childIndex}}"
+                bindtouchstart="touchS"
+                bindtouchmove="touchM"
+                bindtouchend="touchE"
+                style="left:{{childItem.left + 'rpx'}}">
+            <text class="name">{{childItem.name}}</text>
+          </view>
+          <view class="item-slide" style="width: {{slideWidth+ 'rpx'}}">
+            <view class="btn-manager" catchtap="setManager" data-type="管理员" data-user="{{childItem}}">
+              <text>设为管理员</text>
+            </view>
+            <view class="btn-delete" catchtap="itemDelete" data-index="{{index}}" data-childIndex="{{childIndex}}" data-id="{{childItem.id}}">
+              <text>删除</text>
+            </view>
+          </view>
+        </view>
+      </repeat>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import pinYinUtil from '../../../utils/pinYinUtil';
+  import util from '../../../utils/util'
+
+  export default class Contact extends wepy.page {
+    config = {
+      navigationBarTitleText: '用户管理'
+    };
+    components = {};
+
+    data = {
+      contactlist: [],
+      color: '#989898',
+      startX: 0,
+      startXs: 0,
+      slideWidth: 400,
+      pixelRatio: 2,
+      tempArrayList: [],
+      otherList: [],
+      ownList: []
+    };
+
+    computed = {};
+
+    methods = {
+      //跳转页面
+      passToInfo(type, item){
+        this.$navigate('./userInfo',{type: type, item: JSON.stringify(item)})
+      },
+      touchS: function(e) {  // touchstart
+        this.startX = this.getTouchX(e);
+      },
+      touchM: function(e) {  // touchmove
+        let i = e.currentTarget.dataset.index;
+        let j = e.currentTarget.dataset.childindex;
+        this.contactlist[i].data[j].left = this.getMoveWidth(e, this.startX) * 1;
+      },
+      touchE: function(e) {
+        let i = e.currentTarget.dataset.index;
+        let j = e.currentTarget.dataset.childindex;
+        let disX = this.getEndX(e, this.startX);
+        let left = 0;
+        let width = this.slideWidth;
+        if (disX < 0) {  // 判断滑动方向， （向左滑动）
+          // 滑动的距离大于删除宽度的一半就显示操作列表 否则不显示
+          Math.abs(disX) > width / 5 ? left = -width : left = 0;
+        } else {  // 向右滑动复位
+          left = 0;
+        }
+        this.contactlist[i].data[j].left = left;
+      },
+      touchSs: function(e) {  // touchstart
+        this.startXs = this.getTouchX(e);
+      },
+      touchMs: function(e) {  // touchmove
+        let i = e.currentTarget.dataset.indexs;
+        // this.otherlist[i].left = this.getMoveWidth(e, this.startXs) * 1;
+      },
+      touchEs: function(e) {
+        let i = e.currentTarget.dataset.indexs;
+        let disX = this.getEndX(e, this.startXs);
+        let left = 0;
+        let width = this.slideWidth;
+        if (disX < 0) {  // 判断滑动方向， （向左滑动）
+          // 滑动的距离大于删除宽度的一半就显示操作列表 否则不显示
+          Math.abs(disX) > width / 5 ? left = -width : left = 0;
+        } else {  // 向右滑动复位
+          left = 0;
+        }
+        this.otherList[i].left = left;
+      },
+      //删除管理员
+      itemDeletes(e){
+        let i = e.currentTarget.dataset.indexs;
+        let id = e.currentTarget.dataset.id;
+        let _self = this;
+        wx.showModal({
+          content: '确定删除该管理员？',
+          success: function(res) {
+            if (res.confirm) {
+              _self.otherList.splice(i, 1);
+              _self.$apply();
+              _self.deleteUser(id);
+            }
+          }
+        })
+      },
+      //删除其中一个人员
+      itemDelete: function(e) {
+        let i = e.currentTarget.dataset.index;
+        let j = e.currentTarget.dataset.childindex;
+        let id = e.currentTarget.dataset.id;
+        let _self = this;
+        wx.showModal({
+          content: '确定删除该员工？',
+          success: function(res) {
+            if (res.confirm) {
+              _self.contactlist[i].data.splice(j, 1);
+              if (_self.contactlist[i].data.length <= 0) {
+                _self.contactlist.splice(i, 1);
+              }
+              _self.$apply();
+              _self.deleteUser(id);
+            }
+
+          }
+        })
+      },
+      //设为管理员
+      setManager(e){
+        let type = e.currentTarget.dataset.type;
+        let user = e.currentTarget.dataset.user;
+        let postData = {};
+        postData = user;
+        postData.post = type;
+        let _self = this;
+        wx.showModal({
+          content: '确定设置为' + type + "?",
+          success: function(res) {
+            if (res.confirm) {
+              _self.updateUser(postData);
+            }
+          }
+        })
+      },
+      clickCheck(index, state, childIndex) {
+        let color = state === 'pp-blue' ? 'pp-red' : 'pp-blue';
+        this.contactlist[index].data[childIndex].state = color;
+      },
+      //输入框监听
+      bindSearch(e) {
+        let key = e.detail.value;
+        this.filterSearch(key);
+      }
+    };
+    updateUser(postData){
+      let _self = this;
+      api.updateUser(postData).then(res=>{
+        _self.getList();
+        util.toast('设置成功!');
+      })
+    }
+    deleteUser(id){
+      api.deleterUser({id: id}).then(res=>{
+        util.toast('删除成功!');
+      })
+    }
+    // 获取触摸点的横坐标
+    getTouchX(e) {
+      let touch = e.touches;
+      if (touch.length === 1) {
+        return touch[0].clientX;
+      }
+    }
+
+    // 获取滑动过程中滑动的距离
+    getMoveWidth(e, startX) {
+      return this.getTouchX(e) - startX;
+    }
+
+    getEndX(e, startX) {  // 获取滑动结束滑动的距离
+      let touch = e.changedTouches;
+      if (touch.length === 1) {
+        return touch[0].clientX - startX;
+      }
+    }
+
+    events = {};
+
+    onLoad() {
+      this.getList();
+    }
+    getList(){
+      let _self = this;
+      let staff = wx.getStorageSync('staff');
+      api.queryUsers({ enterpriseId: staff.enterpriseId }).then(res => {
+        let list = res;
+        let employList = [];
+        let otherList = [];
+        let ownList = [];
+        list.forEach(item => {
+          if (item.post === '员工') {
+            employList.push(item);
+          } else if (item.post === '管理员') {
+            otherList.push(item);
+          } else {
+            ownList.push(item);
+          }
+        });
+        _self.tempArrayList = _self.pySegSort(employList);
+        _self.contactlist = _self.tempArrayList;
+        _self.otherList = otherList;
+        _self.ownList = ownList;
+        _self.$apply();
+      });
+    }
+
+    // 按字母排序
+    pySegSort(arr) {
+      let letters = 'abcdefghjklmnopqrstwxyz*'.split('');
+      let segs = [];
+      letters.forEach((letter) => {
+        let currItem = { letter: letter.toUpperCase(), data: [] };
+        arr.forEach(item => {
+          let pinyin = pinYinUtil.convertPinyin(item.name[0]);
+          if (pinyin[0] === letter) {
+            currItem.data.push(item);
+          } else {
+            let reg = new RegExp('[a-zA-Z]');
+            if (letter === '*' && !reg.test(pinyin[0])) {
+              currItem.data.push(item);
+            }
+          }
+        });
+        if (currItem.data.length !== 0) {
+          segs.push(currItem);
+        }
+      });
+
+      return segs;
+    };
+
+    filterSearch(key) {
+      let _tempList = [];
+      if (key === null || key === '') {
+        this.contactlist = this.tempArrayList;
+        return;
+      }
+      //把搜索的key转换为拼音,字符
+      let letterKey = pinYinUtil.convertPinyin(key).toUpperCase();
+      //过滤掉不符合条件的字母组
+      this.tempArrayList.forEach(item => {
+        let tempItem = { letter: item.letter, data: [] };
+
+        //过滤掉符合条件组里面，不符合条件的名字
+        item.data.forEach(childItem => {
+          let pinyin = pinYinUtil.convertPinyin(childItem.name).toUpperCase();
+          if (pinyin.indexOf(letterKey) !== -1) {
+            tempItem.data.push(childItem);
+          }
+        });
+        //如果data.lenth>0，代表有满足条件的值
+        if (tempItem.data.length > 0) {
+          _tempList.push(tempItem);
+        }
+      });
+      this.contactlist = _tempList;
+    }
+  }
+</script>

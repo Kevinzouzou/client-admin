@@ -1,0 +1,177 @@
+<style lang="less">
+
+  .pp-recharge {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .header {
+      height: ~"250rpx";
+      width: 100%;
+      font-size: ~"28rpx";
+      color: #4A4A4A;
+      padding: ~"50rpx" ~"40rpx";
+      background-color: #ffffff;
+
+      .input-layout {
+        height: ~"98rpx";
+        padding-top: ~"30rpx";
+        display: flex;
+        align-items: center;
+        border-bottom: solid ~"1rpx" #9B9B9B;
+
+        image {
+          width: ~"40rpx";
+          height: ~"51rpx";
+          flex: none;
+        }
+        input {
+          padding: 0 ~"10rpx";
+          flex: 1;
+        }
+      }
+
+    }
+
+    .section {
+      width: 100%;
+      .two {
+        margin-top: ~"20rpx";
+        background: #ffffff;
+        font-size: ~"28rpx";
+        color: #333333;
+      }
+      .line {
+        border-top: ~"1rpx" solid #E7E7E7;
+      }
+
+      .method {
+        height: ~"80rpx";
+        line-height: ~"80rpx";
+        width: 100%;
+        padding: 0 ~"30rpx";
+      }
+
+      .item {
+        width: 100%;
+        padding: 0 ~"30rpx";
+        height: ~"100rpx";
+        display: flex;
+        align-items: center;
+      }
+      .ic-title {
+        height: ~"40rpx";
+        width: ~"40rpx";
+        flex: none;
+      }
+      .title {
+        padding-left: ~"30rpx";
+        flex: auto;
+      }
+      .ic-arrow {
+        height: ~"32rpx";
+        width: ~"32rpx";
+        flex: none;
+      }
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #C1A17B;
+      font-size: ~"32rpx";
+      width: 100%;
+      height: ~"98rpx";
+      line-height: ~"98rpx";
+      text-align: center;
+      color: #FFFFFF;
+    }
+  }
+
+
+</style>
+
+<template>
+  <view class="pp-recharge">
+    <view class="header">
+      <text>充值金额</text>
+      <view class="input-layout">
+        <image src="../../../asserts/images/ixon_wodeshoucang.png"></image>
+        <input type="digit" bindinput="bindInputAmount" auto-focus/>
+      </view>
+
+    </view>
+
+    <view class="section">
+      <view class="two">
+        <view class="method">
+          选择支付方式
+        </view>
+        <view class="item" @tap="bindPayMethod('wx')">
+          <image class="ic-title" src="../../../asserts/images/icon_zhifu_weixinzhifu.png"></image>
+          <text class="title">微信支付</text>
+          <image class="ic-arrow"  src="{{isWeChat ?'../../../asserts/images/icon_shenpi_tongguo.png' : '../../../asserts/images/icon_weixuanzhong.png'}}"></image>
+        </view>
+        <view class="item line" @tap="bindPayMethod('aLipay')">
+          <image class="ic-title" src="../../../asserts/images/icon_zhifu_zhufubaozhifu.png"></image>
+          <text class="title">支付宝支付</text>
+          <image class="ic-arrow"
+                 src="{{isWeChat ? '../../../asserts/images/icon_weixuanzhong.png':'../../../asserts/images/icon_shenpi_tongguo.png'}}"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="footer" @tap="bindItem('recharge')">
+      <text>充值</text>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+
+  export default class My extends wepy.page {
+    config = {
+      navigationBarTitleText: '充值'
+    };
+    components = {};
+
+    data = {
+      userInfo: null,
+      isWeChat: true
+    };
+
+    computed = {};
+
+    methods = {
+      bindItem(title) {
+        let path = './' + title;
+        this.$navigate(path)
+      },
+      bindPayMethod(type){
+         this.isWeChat = type==='wx'
+      },
+      bindInputAmount(e){
+        let value =e.detail.value;
+         console.log(value);
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+
+    };
+
+    onShow() {
+      this.userInfo = this.$parent.globalData.ppInfo.get();
+    }
+
+  }
+</script>

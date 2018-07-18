@@ -1,0 +1,16 @@
+{
+	"description": "user app",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wx9a1711b9640288ac",
+	"projectname": "shzg",
+	"miniprogramRoot": "./dist",
+	"libVersion": "1.7.4",
+	"condition": {}
+}

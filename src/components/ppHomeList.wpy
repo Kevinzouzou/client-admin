@@ -1,0 +1,135 @@
+<style lang="less">
+  .house {
+    position: relative;
+    .house-img {
+      width: 100%;
+      height: ~"370rpx";
+    }
+    .info {
+      position: absolute;
+      top: ~"315rpx";
+      margin: 0 ~"20rpx";
+      .info-item {
+        display: flex;
+        align-items: center;
+        height: ~"98rpx";
+        text-align: center;
+        font-size: ~"26rpx";
+        color: #EB606A;
+        border: ~"1rpx" solid #CBCBCB;
+        .info-type {
+          height: ~"98rpx";
+          line-height: ~"98rpx";
+          width: ~"355rpx";
+          border-right: ~"1rpx" solid #CBCBCB;
+        }
+        .info-price {
+          width: ~"355rpx";
+        }
+      }
+      .bg {
+        font-size: ~"24rpx";
+        color: #333333;
+        background: #F4F4F4;
+        border-bottom: ~"1rpx" solid #e7e7e7;
+      }
+    }
+  }
+
+  .remark {
+    margin-top: ~"200rpx";
+    margin-left: ~"30rpx";
+    height: ~"124rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;;
+    .remark-title {
+      font-size: ~"28rpx";
+      color: #333333;
+      height: ~"32rpx";
+      line-height: ~"32rpx";
+    }
+    .remark-content {
+      padding-top: ~"20rpx";
+      font-size: ~"24rpx";
+      color: #333333;
+      height: ~"32rpx";
+      line-height: ~"32rpx";
+    }
+  }
+
+  .phone {
+    padding: ~"40rpx" ~"50rpx" 0 ~"30rpx";
+    .phone-number{
+      font-size: ~"28rpx";
+      color: #333333;
+    }
+    .phone-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: ~"24rpx";
+      color: #333333;
+      padding-top: ~"20rpx";
+      .phone-img{
+        width: ~"36rpx";
+        height: ~"36rpx";
+      }
+    }
+  }
+</style>
+<template>
+  <view class="house">
+    <image src="{{list.thumbUrl}}" class="house-img"></image>
+    <view class="info">
+      <view class="info-item bg">
+        <view class="info-type">类型</view>
+        <view class="info-price">价格(元)</view>
+      </view>
+      <view class="info-item">
+        <view class="info-type">{{list.addInfo.itemType}}</view>
+        <view class="info-price">{{list.addInfo.price}}元/{{list.addInfo.unit}}</view>
+      </view>
+    </view>
+    <view class="remark">
+      <view class="remark-title">
+        注意事项
+      </view>
+      <view class="remark-content">
+        此处价格只做参考，具体价格请咨询相关工作人员
+      </view>
+    </view>
+    <view class="phone">
+      <text class="phone-number">预约电话</text>
+      <view class="phone-item">
+        <text>{{list.addInfo.contactPhone}}</text>
+        <image src="/asserts/images/icon_bodadianhua@2x.png" class="phone-img" @tap="call('{{list.addInfo.contactPhone}}')"></image>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class _image extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      }
+    };
+    data = {};
+
+    events = {};
+
+    methods = {
+      //打电话
+      call(phone) {
+        wx.makePhoneCall({
+          phoneNumber: phone
+        });
+      }
+    };
+
+    onLoad() {
+    }
+  }
+</script>

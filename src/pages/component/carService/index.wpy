@@ -1,0 +1,259 @@
+<style lang="less">
+  @import "../../../asserts/style/commit";
+  @import "../../../asserts/style/form";
+  @import "../../../asserts/style/tab";
+  page{
+    background: #172029;
+  }
+  .pp-tab {
+    position: relative;
+  }
+
+  .pp-navbar {
+    position: absolute;
+    height: ~"100rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    border-top: none;
+  }
+
+  .pp-tab__panel {
+    position: absolute;
+    margin-top: ~"180rpx";
+  }
+
+  .pp-com-size {
+    height: ~"937rpx";
+  }
+
+  .pp-commit .pp-com-form {
+    top: ~"376rpx";
+  }
+
+  .pp-enter-title {
+    border-bottom: none;
+  }
+
+  .pp-navbar__slider {
+    width: ~"40rpx";
+    left: ~"98rpx";
+  }
+
+  .pp-navbar__item {
+    font-size: ~"28rpx";
+    color: #9B9B9B;
+  }
+
+  .pp-navbar__item.pp-bar__item_on {
+    color: #222222;
+  }
+
+  .pp-form-msg {
+    border-top: ~"1rpx" solid #e7e7e7;
+    margin: ~"620rpx"  ~"40rpx" 0;
+    padding-left:  0;
+  }
+
+  .pp-car {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: ~"1rpx" solid #CBCBCB;
+    width: ~"602rpx";
+    height: ~"98rpx";
+    margin: 0 auto;
+    .pp-car-item {
+      width: ~"86rpx";
+      height: ~"98rpx";
+      border-left: ~"1rpx" solid #CBCBCB;
+      text-align: center;
+      line-height: ~"98rpx";
+      font-size: ~"30rpx";
+      color: #4A4A4A;
+      &:first-child {
+        border-left: none;
+      }
+    }
+  }
+
+  .pp-all-switch {
+    height: ~"50rpx";
+    margin: 0 auto;
+    padding-top: ~"60rpx";
+    padding-bottom: ~"30rpx";
+  }
+
+  .pp-blue-switch {
+    width: ~"200rpx";
+  }
+
+  .pp-yellow-switch {
+    width: ~"300rpx";
+  }
+
+  .pp-switch-blue {
+    width: ~"200rpx";
+    height: ~"50rpx";
+  }
+
+  .pp-switch-yellow {
+    width: ~"300rpx";
+    height: ~"50rpx";
+  }
+
+  .pp-switch-text {
+    font-size: ~"24rpx";
+    height: ~"24rpx";
+    line-height: ~"24rpx";
+  }
+  .pp-car-num{
+    display: flex;
+    justify-content: center;
+  }
+  .pp-input-check {
+    width:  ~"80rpx";
+    height:  ~"98rpx";
+    border:  ~"1rpx" solid #CBCBCB;
+    text-align: center;
+    line-height:  ~"98rpx";
+  }
+  .pp-input-check{
+    border-right: none;
+  }
+</style>
+<template>
+  <view class="pp-commit">
+    <view class="pp-commit-img">
+      <image src="http://lmstore.oss-cn-shenzhen.aliyuncs.com/suggesstions/1527229297640.jpg" class="pp-commit-img"></image>
+      <!--<view class="pp-commit-img"></view>-->
+      <view class="pp-commit-into" @tap="showMore">缴费记录</view>
+      <image src="../../../asserts/images/pic_mask_r.png" class="pp-mark-img"></image>
+      <view class="pp-com-form pp-com-size">
+        <view class="pp-enter-title">
+          停车服务
+        </view>
+        <view class="pp-tab">
+          <view class="pp-navbar">
+            <repeat for="{{tabList}}" index="index" item="item">
+              <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+                    @tap="tabClick">
+                <view class="pp-navbar__title">{{item}}</view>
+              </view>
+            </repeat>
+            <view class="pp-navbar__slider"
+                  style="transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+          </view>
+          <view class="pp-tab__panel">
+            <view class="pp-tab__content" hidden="{{activeIndex != 0}}">
+              <view class="pp-car-num">
+                <picker value="{{accountIndex}}" range="{{accounts}}" @change="bindTypeChange">
+                  <view class="pp-input-check">
+                    {{accounts[accountIndex]}}
+                  </view>
+                </picker>
+                <picker value="{{cityIndex}}" range="{{cityList}}" @change="bindCityChange">
+                  <view class="pp-input-check">
+                    {{cityList[cityIndex]}}
+                  </view>
+                </picker>
+                <ppInput color="#CBCBCB" height="94rpx" :sixdig.sync="carType"></ppInput>
+              </view>
+              <view class="{{carType?'pp-blue-switch':'pp-yellow-switch'}} pp-all-switch" @tap="changeType()">
+                <image
+                  src="{{!carType?'../../../asserts/images/icon_tingche_qiehuanxinnengyuan.png':'../../../asserts/images/icon_tingche_qiehuanlanpaiche.png'}}"
+                  class="{{carType?'pp-switch-blue':'pp-switch-yellow'}}"></image>
+              </view>
+            </view>
+            <view class="pp-tab__content" hidden="{{activeIndex != 1}}">
+            </view>
+            <view class="pp-tab__content" hidden="{{activeIndex != 2}}">
+            </view>
+          </view>
+        </view>
+        <view class="pp-form-msg">
+          注意事项:请输入正确（申请信息），以免造成不便
+        </view>
+        <view class='pp-btn pp-mb20' @tap="toPay">
+          <veiw class="pp-btn-text {{isClick?'pp-color':''}}">去缴费</veiw>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppInput from '../../../components/ppInput';
+  import LicensePlate from '../../../utils/constant';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '停车充值'
+    };
+    components = {
+      ppInput: ppInput
+    };
+
+    data = {
+      carNum: [],
+      carType: false,
+      isClick: false,
+      tabList: ['临时缴费', '月卡申请', 'VIP车位'],
+      activeIndex: 0,
+      sliderOffset: 0,
+      sliderLeft: 0,
+      accounts: LicensePlate.LicensePlate.Province,
+      accountIndex: 0,
+      cityList:LicensePlate.LicensePlate.city,
+      cityIndex: 0
+    };
+
+    computed = {};
+
+    methods = {
+      bindTypeChange(e) {
+        this.accountIndex = e.detail.value;
+      },
+      bindCityChange(e){
+        this.cityIndex = e.detail.value;
+      },
+      showMore() {
+        this.$navigate('./applyRecord');
+      },
+      //切换
+      tabClick(e) {
+        this.sliderOffset = e.currentTarget.offsetLeft;
+        this.activeIndex = e.currentTarget.id;
+      },
+      changeType() {
+        this.carType = !this.carType;
+      },
+      //去支付
+      toPay() {
+        if (!this.isClick) return;
+        this.$navigate('./pay',{carType: this.carType});
+      }
+    };
+
+    events = {
+      changeValue(value){
+        if((this.carType && value.length===6) || (!this.carType && value.length===5)){
+          this.isClick = true
+        }else{
+          this.isClick = false
+        }
+      }
+    };
+
+
+    onLoad() {
+      api.getSerInfo({}).then((res)=>{
+        this.enterList = util.getTypeInfo(res, '停车服务');
+        this.$apply();
+      });
+    }
+
+  }
+</script>

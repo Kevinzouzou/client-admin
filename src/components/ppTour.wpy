@@ -1,0 +1,87 @@
+<style lang="less">
+  @import "../asserts/style/list";
+</style>
+<template>
+  <repeat for="{{tourList}}" index="index" item="item">
+    <view class="pp-enter">
+      <view class="pp-enter-title">
+        <view class="pp-enter-time">
+          <view class="pp-time-name">
+            申请时间
+          </view>
+          <view class="pp-time-info">
+            {{item.createTime}}
+          </view>
+        </view>
+      </view>
+      <view class="enter-content">
+        <view class="pp-enter-info">
+          <view class="pp-list">
+            <view class="pp-list-item">
+              公司确认
+            </view>
+            <view class="pp-list-con">
+              {{item.company}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              物业审核
+            </view>
+            <view class="pp-list-con">
+              {{item.contact}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              保安确认
+            </view>
+            <view class="pp-list-con">
+              {{item.phone}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              出行日期
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.date}}
+            </view>
+          </view>
+          <view class="pp-list pp-remark">
+            <view class="pp-list-item">
+              放行物品
+            </view>
+            <view class="pp-list-con pp-list-remark">
+              {{item.addInfo.remark}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+<script>
+  import wepy from 'wepy'
+
+
+  export default class _image extends wepy.component {
+    props = {
+      tourList:{
+        type: Array,
+        default: []
+      }
+    };
+    data = {
+      enterList:[]
+    };
+
+    events = {};
+
+    methods = {};
+
+    onLoad() {
+    }
+
+  }
+</script>

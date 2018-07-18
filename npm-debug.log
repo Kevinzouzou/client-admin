@@ -1,0 +1,36 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'D:\\web\\node\\node.exe',
+1 verbose cli   'D:\\web\\node\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'dev' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.2
+4 verbose run-script [ 'predev', 'dev', 'postdev' ]
+5 info lifecycle user@0.0.1~predev: user@0.0.1
+6 silly lifecycle user@0.0.1~predev: no script for predev, continuing
+7 info lifecycle user@0.0.1~dev: user@0.0.1
+8 verbose lifecycle user@0.0.1~dev: unsafe-perm in lifecycle true
+9 verbose lifecycle user@0.0.1~dev: PATH: D:\web\node\node_modules\npm\bin\node-gyp-bin;E:\znq\web\shzgApp\node_modules\.bin;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;D:\java\jdk\bin;D:\java\jdk\jre\bin;D:\android\sdk\platform-tools;D:\android\sdk\tools;D:\android\AS\gradle\gradle-4.1\bin;D:\web\node\;D:\Git\cmd;D:\apache-tomcat-8.5.28\bin;C:\Program Files\MySQL\MySQL Server 5.7\bin;C:\Users\znq\AppData\Local\Microsoft\WindowsApps;C:\Users\znq\AppData\Roaming\npm;C:\Users\znq\AppData\Local\Programs\Fiddler;D:\应用程序\Fiddler2\Fiddler;C:\Users\znq\.AndroidStudio3.0\config\plugins\Kotlin\kotlinc\bin;;%USERPROFILE%\AppData\Local\Microsoft\WindowsApps
+10 verbose lifecycle user@0.0.1~dev: CWD: E:\znq\web\shzgApp
+11 silly lifecycle user@0.0.1~dev: Args: [ '/d /s /c', 'wepy build --watch' ]
+12 verbose stack Error: kill ENOSYS
+12 verbose stack     at exports._errnoException (util.js:1020:11)
+12 verbose stack     at process.kill (internal/process.js:190:13)
+12 verbose stack     at process.listener (D:\web\node\node_modules\npm\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:86:15)
+12 verbose stack     at emitNone (events.js:91:20)
+12 verbose stack     at process.emit (events.js:185:7)
+12 verbose stack     at processEmit (D:\web\node\node_modules\npm\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:146:32)
+12 verbose stack     at processEmit (D:\web\node\node_modules\npm\node_modules\npm-registry-client\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:146:32)
+12 verbose stack     at Signal.wrap.onsignal (internal/process.js:217:44)
+13 verbose cwd E:\znq\web\shzgApp
+14 error Windows_NT 10.0.16299
+15 error argv "D:\\web\\node\\node.exe" "D:\\web\\node\\node_modules\\npm\\bin\\npm-cli.js" "run" "dev"
+16 error node v6.11.2
+17 error npm  v3.10.10
+18 error code ENOSYS
+19 error errno ENOSYS
+20 error syscall kill
+21 error kill ENOSYS
+22 error If you need help, you may report this error at:
+22 error     <https://github.com/npm/npm/issues>
+23 verbose exit [ 1, true ]

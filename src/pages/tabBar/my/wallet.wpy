@@ -1,0 +1,245 @@
+<style lang="less">
+
+  .pp-wallet {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+    .header {
+      height: ~"520rpx";
+      width: 100%;
+      image {
+        z-index: 1;
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
+
+      .preview {
+        top: 0;
+        left: 0;
+        z-index: 2;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: ~"520rpx";
+
+        image {
+          position: relative;
+          width: ~"110rpx";
+          height: ~"110rpx";
+          margin-top: ~"92rpx";
+          border-radius: 50%;
+
+        }
+
+        .nickname {
+          font-size: ~"36rpx";
+          color: #FFFFFF;
+          padding-top: ~"38rpx";
+          padding-bottom: ~"69rpx";
+        }
+        .amount {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .balance {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .vertical-line {
+            flex: none;
+            width: ~"2rpx";
+            height: ~"44rpx";
+            background-color: #ffffff;
+          }
+
+          .points {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .number {
+            font-size: ~"64rpx";
+            color: #FFFFFF;
+            padding-bottom: ~"10rpx";
+          }
+
+          .unit {
+            font-size: ~"24rpx";
+            color: #FFFFFF;
+          }
+        }
+
+      }
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+
+      .one {
+        width: 100%;
+        background: #ffffff;
+      }
+      .two {
+        width: 100%;
+        margin-top: ~"20rpx";
+        background: #ffffff;
+      }
+      .line {
+        border-top: ~"1rpx" solid #E7E7E7;
+      }
+
+      .item {
+
+        padding: 0 ~"30rpx";
+        height: ~"98rpx";
+        display: flex;
+        align-items: center;
+        font-size: ~"30rpx";
+        color: #222222;
+      }
+
+      .ic-title {
+        height: ~"37rpx";
+        width: ~"37rpx";
+        flex: none;
+      }
+      .title {
+        padding-left: ~"20rpx";
+        flex: 1 1 ~"120rpx";
+      }
+      .ic-arrow {
+        width: ~"24rpx";
+        height: ~"24rpx";
+        flex: none;
+      }
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #C1A17B;
+      font-size: ~"32rpx";
+      width: 100%;
+      height: ~"98rpx";
+      line-height: ~"98rpx";
+      text-align: center;
+      color: #FFFFFF;
+    }
+  }
+
+
+</style>
+
+<template>
+  <view class="pp-wallet">
+    <view class="header">
+      <image src="../../../asserts/images/bg_menjin.png" mode="aspectFill"/>
+
+      <view class="preview">
+        <image src="{{userInfo.avatarUrl}}" mode="aspectFill"/>
+        <text class="nickname">{{userInfo.nickName}}</text>
+        <view class="amount">
+
+          <view class="balance">
+            <text class="number">6577</text>
+            <text class="unit">余额(元)</text>
+          </view>
+
+          <view class="vertical-line"></view>
+
+          <view class="points">
+            <text class="number">2245.45</text>
+            <text class="unit">积分</text>
+
+          </view>
+
+        </view>
+
+      </view>
+
+    </view>
+
+    <view class="section">
+      <view class="one">
+        <view class="item" @tap="bindItem('consumeRecord')">
+          <text class="title">消费记录</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+        <view class="item line" @tap="bindItem('rechargeRecord')">
+          <text class="title">充值记录</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+      </view>
+
+      <view class="two">
+        <view class="item" @tap="bindItem('setPassword')">
+          <text class="title">设置支付密码</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+        <view class="item line" @tap="bindItem('forgetPassword')">
+          <text class="title">忘记支付密码</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="footer" @tap="bindItem('recharge')">
+      <text>充值</text>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+
+  export default class My extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的钱包'
+    };
+    components = {};
+
+    data = {
+      userInfo: null
+    };
+
+    computed = {};
+
+    methods = {
+      bindItem(title, e) {
+        let path = './' + title;
+        this.$navigate(path)
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+
+    };
+
+    onShow() {
+      this.userInfo = this.$parent.globalData.ppInfo.get();
+    }
+
+  }
+</script>

@@ -1,0 +1,129 @@
+<style lang="less">
+  @import "../../../asserts/style/tab";
+
+  page {
+    background: #FFFFFF;
+  }
+
+  .pp-navbar__slider {
+    left: ~"170rpx";
+  }
+
+  .pp-navbar {
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    top: ~"60rpx";
+  }
+
+  .btn {
+    width: ~"690rpx";
+    height: ~"80rpx";
+    background: #C1A17B;
+    border-radius: ~"4rpx";
+    text-align: center;
+    margin: ~"30rpx" auto 0;
+    font-size: ~"32rpx";
+    line-height: ~"80rpx";
+    color: #FFFFFF;
+    position: fixed;
+    left: ~"30rpx";
+    bottom: ~"20rpx";
+  }
+
+  .house {
+    position: fixed;
+    width: ~"750rpx";
+  }
+
+  .ticket {
+    padding-right: ~"30rpx";
+    height: ~"60rpx";
+    line-height: ~"60rpx";
+    font-size: ~"30rpx";
+    text-align: right;
+  }
+</style>
+<template>
+  <view class="ticket" @tap="passTo">我的拼单</view>
+  <view class="pp-tab">
+    <view class="pp-navbar">
+      <repeat for="{{tabs}}" index="index" item="item">
+        <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+              @tap="tabClick">
+          <view class="pp-navbar__title">{{item.addInfo.itemType}}</view>
+        </view>
+      </repeat>
+      <view class="pp-navbar__slider"
+            style="transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+    </view>
+    <view class="pp-tab__panel">
+      <view class="pp-tab__content">
+        <ppList :list.sync="list"></ppList>
+      </view>
+    </view>
+  </view>
+  <view class="btn" @tap="add">
+    发起拼单
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppList from '../../../components/ppHomeList';
+  import api from '../../../api/homeApi';
+
+  export default class Entrance extends wepy.page {
+    config = {
+      navigationBarTitleText: '园艺服务',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppList: ppList
+    };
+
+    data = {
+      tabs: [],
+      activeIndex: 0,
+      sliderOffset: 0,
+      sliderLeft: 0,
+      list: {}
+    };
+
+    computed = {};
+
+    methods = {
+      //切换选项卡
+      tabClick(e) {
+        this.sliderOffset = e.currentTarget.offsetLeft;
+        this.activeIndex = e.currentTarget.id;
+        this.list = this.tabs[this.activeIndex];
+      },
+      //跳转到拼单页面
+      passTo() {
+        this.$navigate('./myJoin');
+      },
+      //发起拼单
+      add() {
+        this.$navigate('./join', { item: JSON.stringify(this.list) });
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+      wx.showLoading({ title: '正在加载中' });
+      this.getList();
+    };
+
+    getList() {
+      let _self = this;
+      api.queryInfo({ type: '家政服务', subtype: '园艺服务' }).then((res) => {
+        wx.hideLoading();
+        _self.tabs = res;
+        _self.list = _self.tabs[0];
+        _self.$apply();
+      });
+    }
+  }
+</script>

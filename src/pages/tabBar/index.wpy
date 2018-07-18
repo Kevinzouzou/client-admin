@@ -1,0 +1,493 @@
+<style lang="less">
+  .page-index {
+    background-color: #ffffff;
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 ~"30rpx" ~"30rpx";
+
+      .header-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: ~"108rpx";
+
+        .info-left {
+          display: flex;
+          align-items: center;
+          font-size: ~"36rpx";
+          color: #222222;
+
+          .img-weather {
+            margin-left: ~"27rpx";
+            margin-right: ~"30rpx";
+            width: ~"26rpx";
+            height: ~"26rpx";
+          }
+          .weather {
+            font-size: ~"28rpx";
+            color: #9B9B9B;
+          }
+
+        }
+
+        .info-right {
+          .img-msg {
+            width: ~"36rpx";
+            height: ~"32rpx";
+            margin-left: ~"60rpx";
+          }
+
+          .img-scan {
+            width: ~"32rpx";
+            height: ~"32rpx";
+          }
+        }
+
+      }
+
+      .header-search {
+        display: flex;
+        align-items: center;
+        font-size: ~"28rpx";
+        color: #CDCDCD;
+        background: #F2F2F2;
+        border-radius: ~"4rpx";
+        width: 100%;
+        height: ~"58rpx";
+
+        image {
+          width: ~"30rpx";
+          height: ~"30rpx";
+          margin-right: ~"14rpx";
+          margin-left: ~"26rpx";
+        }
+      }
+
+    }
+    .section-banner {
+      image {
+        width: 100%;
+        height: ~"310rpx";
+      }
+    }
+
+    .section-grid {
+      display: flex;
+      flex-flow: wrap row;
+      padding-top: ~"68rpx";
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: ~"22rpx";
+        color: #222222;
+        width: 20%;
+
+        image {
+          width: ~"70rpx";
+          height: ~"70rpx";
+          flex: none;
+          padding-bottom: ~"16rpx";
+        }
+        .title {
+          padding-bottom: ~"56rpx";
+        }
+      }
+
+      .title {
+
+      }
+
+    }
+
+    .section-gallery {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: ~"28rpx";
+      color: #333333;
+      padding: ~"36rpx" ~"30rpx";
+      border-top: ~"1rpx" solid #e7e7e7;
+      text-align: left;
+      .text-detail{
+        width: ~"532rpx";
+        overflow: hidden;
+        height: ~"36rpx";
+        white-space: nowrap;
+        text-overflow: ellipsis
+      }
+      image {
+        width: ~"40rpx";
+        height: ~"40rpx";
+        flex: none;
+      }
+
+      .more {
+        display: flex;
+        align-items: center;
+        color: #9B9B9B;
+        flex: none;
+
+        image {
+          width: ~"20rpx";
+          height: ~"20rpx";
+          flex: none;
+          margin-left: ~"12rpx";
+        }
+      }
+    }
+  }
+
+  .pp-swipe {
+    background: #ffffff;
+    width: 100%;
+    margin-top: ~"20rpx";
+    margin-bottom: ~"20rpx";
+    .swipe-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: ~"92rpx";
+      padding: 0 ~"30rpx";
+      font-size: ~"32rpx";
+      color: #333333;
+      .title {
+        letter-spacing: ~"4rpx";
+      }
+      .more-info {
+        font-size: ~"28rpx";
+        color: #9B9B9B;
+        .more-image {
+          width: ~"20rpx";
+          height: ~"20rpx";
+          margin-left: ~"12rpx";
+        }
+      }
+    }
+    .pp-swipe-content {
+      height: ~"480rpx";
+      .pp-slide-image {
+        width: ~"690rpx";
+        height: ~"350rpx";
+      }
+      .title {
+        font-size: ~"32rpx";
+        color: #222222;
+        line-height: ~"32rpx";
+        padding-top: ~"30rpx";
+        padding-bottom: ~"15rpx";
+      }
+      .content {
+        font-size: ~"24rpx";
+        color: #757575;
+        line-height: ~"24rpx";
+      }
+    }
+    .pp-article {
+      height: ~"222rpx";
+      display: flex;
+      justify-content: flex-start;
+      padding: 0 ~"30rpx";
+      border-top: ~"1rpx" solid #e7e7e7;
+      background: #FFFFFF;
+      .pp-arc-img {
+        width: ~"284rpx";
+        height: ~"182rpx";
+        padding-top: ~"20rpx";
+      }
+      .pp-arc-text {
+        margin-left: ~"24rpx";
+        position: relative;
+        margin-top: ~"30rpx";
+        margin-right: ~"30rpx";
+        .pp-arc-content {
+          width: ~"346rpx";
+          font-size: ~"24rpx";
+          color: #222222;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+        }
+        .pp-arc-time {
+          position: absolute;
+          left: 0;
+          bottom: ~"30rpx";
+          font-size: ~"24rpx";
+          color: #757575;
+        }
+      }
+    }
+    .pp-article:first-child {
+      border-top: none;
+    }
+  }
+</style>
+<template>
+  <view class="page-index">
+    <view class="header">
+      <view class="header-info">
+        <view class="info-left">
+          <text>{{showText}}～</text>
+          <image src="../../asserts/images/icon_tianqi.png" class="img-weather" mode="aspectFill"></image>
+          <text class="weather">23℃ 微风3级</text>
+        </view>
+        <view class="info-right">
+          <image src="../../asserts/images/icon_xiaoxi.png" class="img-scan" mode="aspectFill" @tap="bindScan"></image>
+          <image src="../../asserts/images/icon_xiaoxi.png" class="img-msg" mode="aspectFill" @tap="bindMsg"></image>
+        </view>
+      </view>
+      <view class="header-search">
+        <image src="../../asserts/images/icon_sousuokuang_sousuo.png" class="img-scan" mode="aspectFill"></image>
+        <text>请输入关键字</text>
+      </view>
+    </view>
+
+    <!--轮播 广告-->
+    <view class="section-banner">
+      <swiper indicator-dots="{{true}}" autoplay="{{true}}" interval="5000" duration="1000" indicator-color="#fffff">
+        <block wx:for="{{adList}}" wx:key="index">
+          <swiper-item>
+            <image src="{{item.imageUrl}}" class="slide-image" mode="aspectFill"></image>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <!--工作台-->
+    <view class="section-grid">
+      <block wx:for="{{workList}}" wx:key="index">
+        <view class="item">
+          <image src="{{item.src}}" class="slide-image" mode="aspectFill"></image>
+          <text class="title">{{item.title}}</text>
+        </view>
+      </block>
+    </view>
+
+    <!--公告-->
+    <view class="section-gallery">
+      <image src="../../asserts/images/icon_yuanqugonggao.png" class="slide-image" mode="aspectFill"></image>
+      <text class="text-detail" @tap="toDetail('{{notice.detailUrl}}','{{notice.id}}')">{{notice.title}}</text>
+      <view class="more" @tap="clickTo('/pages/component/notice')">
+        <text>更多</text>
+        <image src="/asserts/images/icon_jinru.png" class="more-image" mode="aspectFill"></image>
+      </view>
+    </view>
+  </view>
+  <view class="pp-swipe">
+    <view class="swipe-title"  @tap="clickTo('/pages/component/notice')">
+      <text class="title">惠通知</text>
+      <view class="more-info">
+        <text>更多</text>
+        <image src="/asserts/images/icon_jinru.png" class="more-image" mode="aspectFill"></image>
+      </view>
+    </view>
+    <swiper indicator-dots="{{false}}" autoplay="{{false}}" interval="5000" duration="1000" class="pp-swipe-content"
+            previous-margin="40rpx" next-margin="20rpx">
+      <block wx:for="{{discountList}}" wx:key="index" item="item" index="index">
+        <swiper-item @tap="toDetail('{{item.detailUrl}}','{{item.id}}')">
+          <image src="{{item.thumbUrl}}" class="pp-slide-image" mode="aspectFill"></image>
+          <view class="title">{{item.title}}</view>
+          <view class="content">地点：{{item.addInfo.location}}</view>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+  <view class="pp-swipe">
+    <view class="swipe-title"  @tap="clickTo('/pages/component/high')">
+      <text class="title">高端活动</text>
+      <view class="more-info">
+        <text>更多</text>
+        <image src="/asserts/images/icon_jinru.png" class="more-image" mode="aspectFill"></image>
+      </view>
+    </view>
+    <swiper indicator-dots="{{false}}" autoplay="{{false}}" interval="5000" duration="1000" class="pp-swipe-content"
+            previous-margin="40rpx" next-margin="20rpx">
+      <block wx:for="{{highList}}" wx:key="index" item="item" index="index">
+        <swiper-item @tap="toDetail('{{item.detailUrl}}','{{item.id}}')">
+          <image src="{{item.thumbUrl}}" class="pp-slide-image" mode="aspectFill"></image>
+          <view class="title">{{item.title}}</view>
+          <view class="content">地点：{{item.addInfo.location}}</view>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+  <view class="pp-swipe" >
+    <view class="swipe-title" @tap="clickTo('/pages/component/finance')">
+      <text class="title">金融服务</text>
+      <view class="more-info">
+        <text>更多</text>
+        <image src="/asserts/images/icon_jinru.png" class="more-image" mode="aspectFill"></image>
+      </view>
+    </view>
+    <repeat for="{{serList}}" item="item" index="index">
+      <view class="pp-article" @tap="toDetail('{{item.detailUrl}}','{{item.id}}')">
+        <view class="pp-arc-imgs">
+          <image src="{{item.thumbUrl}}" class="pp-arc-img" mode="aspectFit"></image>
+        </view>
+        <view class="pp-arc-text">
+          <view class="pp-arc-content">
+            {{item.title}}
+          </view>
+          <view class="pp-arc-time time-color">
+            {{item.createTime}}
+          </view>
+        </view>
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../api/homeApi';
+  import util from '../../utils/util';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '首页'
+    };
+    components = {};
+
+    data = {
+      showText: '早上好',
+      src: '../../asserts/images/home.png',
+      discountList: [], //惠通知
+      highList: [],  //高端活动
+      workList: [], //工作台
+      serList: [], //金融服务
+      adList: [], //广告列表
+      notice:{}
+    };
+
+    computed = {};
+
+    methods = {
+      bindScan() {
+        wx.scanCode({
+          onlyFromCamera: true,
+          success: (res) => {
+            console.log(res);
+          }
+        });
+      },
+      bindMsg() {
+      },
+      //点击员工中的轮播图
+      toDetail(type,id) {
+        this.$navigate('/pages/component/template', {id: id, url: type});
+      },
+
+      // 跳转到子页面
+      clickTo(url) {
+        this.$navigate(url);
+      }
+    };
+
+    events = {};
+
+    onShow() {
+      this.getWorkList();
+      this.getSerInfo();
+      this.showCurrentTime();
+      this.getAd();
+    };
+
+    onLoad() {
+      this.showCurrentTime();
+    };
+
+    getAd() {
+      api.getAdvertiseMent({ position: '首页', num: 3 }).then(res => {
+        this.adList = res;
+        this.$apply();
+      });
+    }
+
+    //获取现在的时辰
+    showCurrentTime() {
+      let now = new Date();
+      let hour = now.getHours();
+      if (hour < 12) {
+        this.showText = '早上好';
+      } else if (hour < 18) {
+        this.showText = '下午好';
+      } else if (hour < 24) {
+        this.showText = '晚上好';
+      }
+    };
+
+    //获取所有的信息
+    getSerInfo() {
+      wx.showLoading({ title: '正在加载中...' });
+      api.queryInfo({}).then((res) => {
+        wx.hideLoading();
+        this.discountList = util.getTypeInfo(res, '惠通知').splice(0, 3);
+        this.highList = util.getTypeInfo(res, '高端活动').splice(0, 3);
+        this.serList = util.getTypeInfo(res, '金融服务').splice(0, 3);
+        this.notice = util.getTypeInfo(res, '公告')[0];
+        this.$apply();
+      });
+    };
+
+    getWorkList() {
+      this.workList = [
+        {
+          src: '../../asserts/images/icon_ruzhushenqing.png',
+          title: '入驻申请',
+          url: ''
+        },
+        {
+          src: '../../asserts/images/icon_zhuangxiushenqing.png',
+          title: '装修申请'
+        },
+        {
+          src: '../../asserts/images/icon_menjin.png',
+          title: '门禁'
+        },
+        {
+          src: '../../asserts/images/icon_wuyebaoxiu.png',
+          title: '物业保修'
+        },
+        {
+          src: '../../asserts/images/icon_gongxiangshenqing.png',
+          title: '共享申请'
+        },
+        {
+          src: '../../asserts/images/icon_tousujianyi.png',
+          title: '投诉建议'
+        }
+        ,
+        {
+          src: '../../asserts/images/icon_fuwurexian.png',
+          title: '服务热线'
+        }
+        ,
+        {
+          src: '../../asserts/images/icon_fangxingshenqing.png',
+          title: '旅行申请'
+        }
+        ,
+        {
+          src: '../../asserts/images/icon_zhengcejiedu.png',
+          title: '政策解读'
+        },
+        {
+          src: '../../asserts/images/icon_gengduo.png',
+          title: '更多'
+        }
+      ];
+    };
+
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage() {
+
+    }
+  }
+</script>

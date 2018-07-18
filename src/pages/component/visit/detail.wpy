@@ -1,0 +1,85 @@
+<style lang="less">
+  @import "../../../asserts/style/list";
+
+</style>
+<template>
+  <repeat for="{{visitList}}" index="index" item="item">
+    <view class="pp-enter">
+      <view class="pp-enter-title">
+        <view class="pp-enter-time">
+          <view class="pp-time-name">
+            邀请访客时间
+          </view>
+          <view class="pp-time-info">
+            {{item.createTime}}
+          </view>
+        </view>
+      </view>
+      <view class="enter-content">
+        <view class="pp-enter-info">
+          <view class="pp-list">
+            <view class="pp-list-item">
+              邀请人
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.name}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              手机号
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.phone}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              拜访时间
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.date}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '访客记录',
+      navigationBarBackgroundColor:'#1C1C20',
+      navigationBarTextStyle:"white",
+    };
+    components = {};
+
+    data = {
+      visitList: []
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+
+    onLoad() {
+      this.getEnterList();
+    }
+
+    getEnterList() {
+      api.getSerInfo({userId: wx.getStorageSync('userId'), type:'访客申请'}).then((res)=>{
+        this.visitList = res;
+        this.$apply();
+      });
+    }
+  }
+</script>

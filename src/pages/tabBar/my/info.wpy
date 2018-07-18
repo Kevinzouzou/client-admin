@@ -1,0 +1,175 @@
+<style lang="less">
+  page {
+    border-top: ~"1rpx" solid #e7e7e7;
+    background: #FFFFFF;
+  }
+
+  .pp-info {
+    width: 100%;
+    height: ~"298rpx";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    .pp-info-icon {
+      position: relative;
+      .pp-info-img {
+        width: ~"150rpx";
+        height: ~"150rpx";
+        border-radius: 50%;
+      }
+      .pp-change-img {
+        position: absolute;
+        width: ~"60rpx";
+        height: ~"60rpx";
+        bottom: 0;
+        right: ~"-30rpx";
+      }
+    }
+  }
+
+  .pp-info-items {
+
+    .pp-info-item {
+      padding: 0 ~"40rpx";
+      height: ~"98rpx";
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      .pp-info-intro {
+        display: flex;
+        justify-content: space-between;
+        font-size: ~"30rpx";
+        .pp-info-title {
+          width: ~"160rpx";
+          color: #9B9B9B;
+        }
+        .pp-info-value {
+          color: #222222;
+        }
+      }
+      .pp-info-more {
+        display: inline-table;
+        vertical-align: middle;
+        width: ~"24rpx";
+        height: ~"24rpx";
+      }
+
+    }
+  }
+</style>
+<template>
+  <view class="pp-info">
+    <view class="pp-info-icon">
+      <image src="{{userInfo.avatarUrl}}" class="pp-info-img" mode="aspectFill">
+      </image>
+      <image src="../../../asserts/images/icon_huantouxiang.png" class="pp-change-img" mode="aspectFill"
+             @tap="changeAvatarUrl">
+      </image>
+    </view>
+  </view>
+  <view class="pp-info-items">
+    <view class="pp-info-item" @tap="changeInfo('nickname')">
+      <view class="pp-info-intro">
+        <view class="pp-info-title">昵称</view>
+        <view class="pp-info-value">{{userInfo.nickName}}</view>
+      </view>
+      <view class="pp-info-img">
+        <image src="../../../asserts/images/jinru.png" class="pp-info-more" mode="aspectFill"></image>
+      </view>
+    </view>
+    <view class="pp-info-item" @tap="changeInfo('phone')">
+      <view class="pp-info-intro">
+        <view class="pp-info-title">手机</view>
+        <view class="pp-info-value">{{userInfo.phone}}</view>
+      </view>
+      <view class="pp-info-img">
+        <image src="../../../asserts/images/jinru.png" class="pp-info-more" mode="aspectFill"></image>
+      </view>
+    </view>
+    <view class="pp-info-item" @tap="changeInfo('birthday')">
+      <view class="pp-info-intro">
+        <view class="pp-info-title">生日</view>
+        <view class="pp-info-value">{{userInfo.birthday}}</view>
+      </view>
+      <view class="pp-info-img">
+        <image src="../../../asserts/images/jinru.png" class="pp-info-more" mode="aspectFill"></image>
+      </view>
+    </view>
+    <view class="pp-info-item" @tap="changeInfo('sex')">
+      <view class="pp-info-intro">
+        <view class="pp-info-title">性别</view>
+        <view class="pp-info-value">{{userInfo.gender}}</view>
+      </view>
+      <view class="pp-info-img">
+        <image src="../../../asserts/images/jinru.png" class="pp-info-more" mode="aspectFill"></image>
+      </view>
+    </view>
+    <view class="pp-info-item" @tap="changeInfo('job')">
+      <view class="pp-info-intro">
+        <view class="pp-info-title">职业</view>
+        <view class="pp-info-value">{{userInfo.location}}</view>
+      </view>
+      <view class="pp-info-img">
+        <image src="../../../asserts/images/jinru.png" class="pp-info-more" mode="aspectFill"></image>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+
+  export default class My extends wepy.page {
+    config = {
+      navigationBarTitleText: '个人信息'
+    };
+    components = {};
+
+    data = {
+      userInfo: {}
+    };
+
+    computed = {};
+
+    methods = {
+      //修改头像
+      changeAvatarUrl() {
+        let self = this;
+        wx.chooseImage({
+          success: function (res) {
+            let tempFilePaths = res.tempFilePaths;
+            api.uploaImg({file: tempFilePaths[0]}).then((res) => {
+              let img = JSON.parse(res.data);
+              self.userInfo.avatarUrl = img.responseList.imgUrl;
+              self.$apply();
+              let postData = {};
+              postData.addInfo = self.userInfo;
+              api.changeUserInfo(postData).then(res => {
+                self.$parent.globalData.ppInfo.set(self.userInfo);
+              })
+            })
+          }
+        });
+      },
+      //修改信息
+      changeInfo(type) {
+        this.$navigate('./deal', {type: type})
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+
+    };
+    onShow(){
+      this.userInfo = this.$parent.globalData.ppInfo.get();
+    }
+
+  }
+</script>

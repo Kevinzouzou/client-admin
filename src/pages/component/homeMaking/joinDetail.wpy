@@ -1,0 +1,157 @@
+<style lang="less">
+  .detail {
+    background: #FFFFFF;
+    height: ~"398rpx";
+    margin-top: ~"20rpx";
+    padding: ~"20rpx" ~"30rpx";
+    .item {
+      display: flex;
+      align-items: center;
+      height: ~"58rpx";
+      font-size: ~"28rpx";
+      color: #333333;
+      .item-title {
+        width: ~"152rpx";
+      }
+    }
+  }
+
+  .join-state {
+    background: #FFFFFF;
+    height: ~"80rpx";
+    border-top: ~"1rpx" solid #e7e7e7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 ~"30rpx";
+    font-size: ~"28rpx";
+    color: #001422;
+    .oper {
+      width: ~"152rpx";
+      height: ~"50rpx";
+      border: ~"1rpx" solid #F53252;
+      border-radius: ~"4rpx";
+      font-size: ~"24rpx";
+      color: #F53252;
+      text-align: center;
+      line-height: ~"50rpx";
+    }
+  }
+
+  .bottom {
+    position: fixed;
+    bottom: ~"40rpx";
+    font-size: ~"24rpx";
+    color: #9B9B9B;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    text {
+      width: ~"750rpx";
+    }
+    text:first-child {
+      padding-bottom: ~"10rpx";
+    }
+  }
+  .yellow {
+    color: #75AE36;
+  }
+
+  .red {
+    color: #EB606A;
+  }
+
+  .gray {
+    color: #CBCBCB;
+  }
+</style>
+<template>
+  <view class="detail">
+    <view class="item">
+      <text class="item-title">所选服务</text>
+      <text class="item-content">{{info.addInfo.subtype}}</text>
+    </view>
+    <view class="item">
+      <text class="item-title">服务地点</text>
+      <text class="item-content">{{info.addInfo.location}}</text>
+    </view>
+    <view class="item">
+      <text class="item-title">联系人</text>
+      <text class="item-content">{{info.addInfo.contact}}</text>
+    </view>
+    <view class="item">
+      <text class="item-title">联系电话</text>
+      <text class="item-content">{{info.addInfo.phone}}</text>
+    </view>
+    <view class="item">
+      <text class="item-title">下单时间</text>
+      <text class="item-content">{{info.createTime}}</text>
+    </view>
+    <view class="item">
+      <text class="item-title">备注留言</text>
+      <text class="item-content">{{info.addInfo.remark || '无'}}</text>
+    </view>
+  </view>
+  <view class="join-state">
+    <view class="state-type">
+      <text>状态：</text>
+      <text class="red" wx:if="{{info.stage =='待拼单'}}">{{info.stage}}</text>
+      <text class="yellow" wx:if="{{info.stage =='已拼单'}}">{{info.stage}}</text>
+      <text class="gray" wx:if="{{info.stage =='已取消'}}">{{info.stage}}</text>
+    </view>
+    <view class="oper" @tap="cancel" wx:if="{{info.stage === '待拼单'}}">取消拼单</view>
+  </view>
+  <view class="bottom">
+    <text>园区服务电话：0755-39485933</text>
+    <text>服务平台客服：0755-84629474</text>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi'
+  import util from '../../../utils/util'
+
+  export default class Entrance extends wepy.page {
+    config = {
+      navigationBarTitleText: '拼单详情',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      info: {}
+    };
+
+    computed = {};
+
+    methods = {
+      //取消拼单
+      cancel(){
+        let _self = this;
+        wx.showModal({
+          content: '确认取消拼单？',
+          success: function(res) {
+            if (res.confirm) {
+              let postData = _self.info;
+              postData.stage = '已取消';
+              api.dealPropertyApplicationt(postData).then(res => {
+                util.toast('取消成功!');
+                wx.navigateBack();
+              });
+            }
+          }
+        });
+      }
+    };
+
+    events = {};
+
+
+    onLoad(params) {
+      this.info = JSON.parse(params.item);
+    }
+  }
+</script>

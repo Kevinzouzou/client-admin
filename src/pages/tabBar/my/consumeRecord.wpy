@@ -1,0 +1,128 @@
+<style lang="less">
+
+  .pp-consume {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+    .container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .item {
+        display: flex;
+        align-items: center;
+        padding: 0 ~"45rpx";
+        justify-content: space-between;
+        background-color: #ffffff;
+        height: ~"140rpx";
+
+        .info {
+          display: flex;
+          flex-direction: column;
+          width: ~"264rpx";
+          flex: none;
+
+          .title {
+            font-size: ~"30rpx";
+            color: #333333;
+          }
+          .data-time {
+            font-size: ~"24rpx";
+            padding-top: ~"15rpx";
+            color: #757575;
+          }
+        }
+
+        .amount {
+          font-size: ~"48rpx";
+          color: #EB606A;
+        }
+
+      }
+
+      .top-line {
+        border-top: solid ~"1rpx" #E9E9E9;
+      }
+    }
+  }
+
+
+</style>
+
+<template>
+  <view class="pp-consume">
+
+    <view class="container">
+      <block wx:for="{{consumeList}}" wx:key="index">
+        <view class="item {{index!==0?'top-line':''}}" @tap="bindItem(index)">
+          <view class="info">
+            <view class="title">{{item.title}}</view>
+            <view class="data-time">{{item.date}} {{item.time}}</view>
+          </view>
+          <view class="amount">-{{item.price}}</view>
+        </view>
+      </block>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+
+  export default class My extends wepy.page {
+    config = {
+      navigationBarTitleText: '消费记录'
+    };
+    components = {};
+
+    data = {
+      consumeList: []
+    };
+
+    computed = {};
+
+    methods = {
+      bindItem(index) {
+      },
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.getconsumeList()
+    };
+
+    onShow() {
+      this.userInfo = this.$parent.globalData.ppInfo.get();
+    }
+
+    getconsumeList() {
+      this.consumeList = [
+        {
+          title: '我是消费商家',
+          date: '2016-06-22',
+          time: '18:12:22',
+          price: '229.90'
+        }, {
+          title: '我是消费商家',
+          date: '2016-06-22',
+          time: '18:12:22',
+          price: '229.90'
+        }, {
+          title: '我是消费商家',
+          date: '2016-06-22',
+          time: '18:12:22',
+          price: '229.90'
+        }
+      ]
+    };
+
+  }
+</script>

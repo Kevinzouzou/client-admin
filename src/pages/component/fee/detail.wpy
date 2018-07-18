@@ -1,0 +1,46 @@
+<style lang="less">
+
+</style>
+<template>
+<text>this is entrance Detail page</text>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Detail extends wepy.page {
+    config = {
+      navigationBarTitleText: '物业费详情',
+      navigationBarBackgroundColor:'#1C1C20',
+      navigationBarTextStyle:"white",
+    };
+    components = {
+
+    };
+
+    data = {
+
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+
+    onLoad() {
+
+    };
+
+    /**
+     * 监听用户下拉动作
+     */
+    onPullDownRefresh() {
+      setTimeout((arg) => {
+        wx.stopPullDownRefresh();
+      }, 300);
+    };
+
+  }
+</script>

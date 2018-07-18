@@ -1,0 +1,442 @@
+<style lang="less">
+  .scroll-view-item {
+    width: ~"200rpx";
+    height: ~"600rpx";
+  }
+
+  .pp-ser {
+    position: relative;
+    border-top: ~"1rpx" solid #e7e7e7;
+    height: 100%;
+    .pp-ser-category {
+      height: ~"1108rpx";
+      width: ~"180rpx";
+      position: fixed;
+      left: 0;
+      top: 0;
+      border-top: ~"1rpx" solid #e7e7e7;
+      font-size: ~"26rpx";
+      .pp-ser-name {
+        height: ~"90rpx";
+        line-height: ~"90rpx";
+        text-align: center;
+        position: relative;
+        .pp-ser-bar {
+          height: ~"60rpx";
+          width: ~"8rpx";
+          background: #C1A17B;
+          position: absolute;
+          left: 0;
+          top: ~"15rpx";
+        }
+      }
+
+      .active {
+        color: #4A4A4A;
+        background: #ffffff;
+      }
+    }
+    .pp-ser-items {
+      position: absolute;
+      left: ~"180rpx";
+      top: 0;
+      background: #ffffff;
+      width: ~"570rpx";
+      padding-top: ~"20rpx";
+      .pp-ser-img {
+        width: ~"530rpx";
+        height: ~"200rpx";
+        margin: ~"20rpx";
+      }
+      .pp-ser-item {
+        width: 100%;
+        .pp-ser-title {
+          display: flex;
+          align-items: center;
+          padding-top: ~"14rpx";
+          .pp-ser-name {
+            font-size: ~"24rpx";
+            color: #4A4A4A;
+            margin-left: ~"60rpx";
+            width: ~"126rpx";
+          }
+          .pp-ser-line {
+            height: ~"1rpx";
+            width: ~"389rpx";
+            background: #E7E7E7;
+          }
+        }
+      }
+      .pe-ser-icon {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: ~"52rpx";
+        .pp-sers {
+          width: ~"190rpx";
+          text-align: center;
+          vertical-align: middle;
+          margin-bottom: ~"56rpx";
+          .pp-sers-img {
+            width: ~"90rpx";
+            height: ~"90rpx";
+          }
+          .pp-sers-text {
+            height: ~"24rpx";
+            line-height: ~"24rpx";
+            margin-top: ~"10rpx";
+            font-size: ~"24rpx";
+            color: #757575;
+          }
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="pp-ser">
+    <view class="pp-ser-category">
+      <repeat for="{{serList}}" item="item" index="index">
+        <view class="pp-ser-name {{curNav === index? 'active':''}}" @tap="changeActive('{{item}}','{{index}}')">
+          <text>{{item.name}}</text>
+          <text class="pp-ser-bar" hidden="{{curNav !== index}}">
+          </text>
+        </view>
+      </repeat>
+    </view>
+    <view class="pp-ser-items">
+
+      <scroll-view scroll-y="{{true}}" style="height: {{srcollHeight}}px;" scroll-into-view="{{scrollTopId}}"
+                   scroll-with-animation="{{true}}" @scroll="scrollMsg">
+        <image src="{{adverseList.imageUrl||'http://lmstore.oss-cn-shenzhen.aliyuncs.com/suggesstions/1527229458168.png'}}" class="pp-ser-img"
+               mode="aspectFit"></image>
+        <repeat for="{{serList}}" item="item" index="index">
+          <view class="pp-ser-item" id="{{item.id}}">
+            <view class="pp-ser-title">
+              <text class="pp-ser-name">{{item.name}}</text>
+              <text class="pp-ser-line"></text>
+            </view>
+            <view class="pe-ser-icon">
+              <repeat for="{{item.children}}" item="childItem" index="childIndex">
+                <view class="pp-sers" @tap="passTo('{{childItem.type}}','{{childItem}}')">
+                  <view class="pp-sers-imgs">
+                    <image src="{{childItem.src}}" class="pp-sers-img" mode="aspectFill"></image>
+                  </view>
+                  <view class="pp-sers-text">
+                    <text>{{childItem.name}}</text>
+                  </view>
+                </view>
+              </repeat>
+            </view>
+          </view>
+        </repeat>
+      </scroll-view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../api/homeApi'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '服务',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      sysPir: 1, //默认的像素比
+      srcollHeight: wx.getStorageSync('winHeight'),
+      scrollTop: 0,
+      serList: [], //左边服务类目
+      scrollTopId: '',
+      curNav: 0,
+      percent: 0,
+      adverseList:{}
+    };
+
+    computed = {};
+
+    methods = {
+      //右侧滑动
+      scrollMsg(e) {
+        let scrollTop = e.detail.scrollTop;
+        let index = 0;
+        let height = 0;
+        for (let i = 0, list = this.serList; i < list.length; i++) {
+          // 累计右侧滑栏滚动上去的每一个分类的 Height
+          let top = 240*this.percent;
+          height += parseInt(list[i].top);
+          // 循环判断 num 是否大于右侧滑栏滚动上去的 Height
+          if (height+top >= e.detail.scrollTop) {
+            index = i;
+            // 如果右侧滑栏滚动高度小于第一个的高度，index 为 0
+            if (e.detail.scrollTop < 120) {
+              index = 0;
+            }
+            break;
+          }
+        }
+        this.curNav = index;
+      },
+      //点击左边
+      changeActive(item, index) {
+        this.curNav = index;
+        this.scrollTopId = item.id;
+      },
+      //点击服务
+      passTo(type, item) {
+        if (type === 1) return;
+        if(item.subType==='notice'){
+          this.$navigate(type, {index: 1});
+          return
+        }
+        if (type === 'limit') {
+          this.$switch('./entrance');
+          return;
+        }
+        let token = wx.getStorageSync('token');
+        if (token) {
+          this.$navigate(type);
+        } else {
+          this.$navigate('./login');
+        }
+      }
+    };
+
+    events = {};
+
+    onShow() {
+      let res = wx.getSystemInfoSync();
+      this.percent = res.windowWidth / 750;
+    };
+
+    onLoad() {
+      this.getSerList();
+      this.getAdList();
+    };
+    //获取广告列表
+    getAdList(){
+      let _self = this;
+      api.getAdvertiseMent({position:'服务'}).then(res=>{
+        _self.adverseList= res[0];
+        _self.$apply();
+      })
+    }
+    getSerList() {
+      this.serList = [
+        {
+          id: 'ser1',
+          name: '基础服务',
+          top: 0,
+          children: [
+            {
+              src: '../../asserts/images/icon/menjin.png',
+              name: '门禁',
+              type: 'limit'
+            },
+            {
+              src: '../../asserts/images/icon/wifi.png',
+              name: '园区wifi',
+              type: 1
+            },
+            {
+              src: '../../asserts/images/icon/card.png',
+              name: '一卡通',
+              type: 1
+            }
+          ]
+        },
+        {
+          id: 'ser2',
+          name: '信息服务',
+          top: 140,
+          children: [
+            {
+              src: '../../asserts/images/icon/gonggao.png',
+              name: '公告',
+              type: '/pages/component/notice'
+            },
+            {
+              src: '../../asserts/images/icon/hui.png',
+              name: '惠通知',
+              type: '/pages/component/notice',
+              subType: 'notice'
+            }
+          ]
+        },
+        {
+          id: 'ser3',
+          name: '金融服务',
+          top: 140,
+          children: [
+            {
+              src: '../../asserts/images/icon/daikuan.png',
+              name: '贷款',
+              type: 1
+            },
+            {
+              src: '../../asserts/images/icon/xinyong.png',
+              name: '信用卡',
+              type: 1
+            },
+            {
+              src: '../../asserts/images/icon/licai.png',
+              name: '理财',
+              type: 1
+            }
+          ]
+        },
+        {
+          id: 'ser4',
+          name: '出行服务',
+          top: 140,
+          scroll: 'test',
+          children: [
+            {
+              src: '../../asserts/images/icon/bas.png',
+              name: '定制巴士',
+              type: 1
+            },
+            {
+              src: '../../asserts/images/icon/zuche.png',
+              name: '租车',
+              type: 1
+            }, {
+              src: '../../asserts/images/icon/gongjiao.png',
+              name: '公交在线',
+              type: 1
+            }
+          ]
+        },
+        {
+          id: 'ser5',
+          name: '物业服务',
+          top: 140,
+          children: [
+            {
+              src: '../../asserts/images/icon/ruzhu.png',
+              name: '入驻申请',
+              type: '/pages/component/entrance/index'
+            },
+            {
+              src: '../../asserts/images/icon/huiyi.png',
+              name: '会议室申请',
+              type: 1
+            }, {
+              src: '../../asserts/images/icon/gongyu.png',
+              name: '共享申请',
+              type: '/pages/tabBar/shareApp/index'
+            }, {
+              src: '../../asserts/images/icon/share.png',
+              name: '公寓申请',
+              type: '/pages/component/apartment/index'
+            },
+            {
+              src: '../../asserts/images/icon/tingche.png',
+              name: '停车服务',
+              type: '../component/carService/index'
+            },
+            {
+              src: '../../asserts/images/icon/decoration.png',
+              name: '装修申请',
+              type: '../component/decorate/index'
+            }, {
+              src: '../../asserts/images/icon/fee.png',
+              name: '物业费查询',
+              type: '../component/fee/index'
+            },
+            {
+              src: '../../asserts/images/icon/repair.png',
+              name: '物业报修',
+              type: '../component/repair/index'
+            }, {
+              src: '../../asserts/images/icon/stop.png',
+              name: '放行申请',
+              type: '../component/tour/index'
+            },
+            {
+              src: '../../asserts/images/icon/fangke.png',
+              name: '访客邀请',
+              type: '../component/visit/index'
+            }, {
+              src: '../../asserts/images/icon/tousu.png',
+              name: '投诉建议',
+              type: '../component/suggest/index'
+            },
+            {
+              src: '../../asserts/images/icon/wuyezhong.png',
+              name: '物流中心',
+              type: 1
+            }
+          ]
+        },
+        {
+          id: 'ser6',
+          name: '企业之家',
+          top: 240,
+          children: [
+            {
+              src: '../../asserts/images/icon/zhengce.png',
+              name: '政策解读',
+              type: 1
+            },
+            {
+              src: '../../asserts/images/icon/gaoduan.png',
+              name: '高端服务',
+              type: '../component/high'
+            },
+            {
+              src: '../../asserts/images/icon/jinrong.png',
+              name: '金融服务',
+              type: '../component/finance'
+            }, {
+              src: '../../asserts/images/icon/info.png',
+              name: '信息化建设',
+              type: '../component/information'
+            },
+            {
+              src: '../../asserts/images/icon/shangwu.png',
+              name: '商务服务',
+              type: '../component/business'
+            }, {
+              src: '../../asserts/images/icon/lianmeng.png',
+              name: '商家联盟',
+              type: 1
+            }
+          ]
+        },
+        {
+          id: 'ser7',
+          name: '家政服务',
+          top: 120,
+          children: [
+            {
+              src: '../../asserts/images/icon/zhuangxiu.png',
+              name: '装修服务',
+              type: '/pages/component/homeMaking/decorate'
+            },
+            {
+              src: '../../asserts/images/icon/banqian.png',
+              name: '搬迁服务',
+              type: '/pages/component/homeMaking/moveSer'
+            },
+            {
+              src: '../../asserts/images/icon/baojie.png',
+              name: '保洁服务',
+              type: '/pages/component/homeMaking/cleanSer'
+            }, {
+              src: '../../asserts/images/icon/lvzhi.png',
+              name: '园艺服务',
+              type: '/pages/component/homeMaking/horticulture'
+            }
+          ]
+        }
+      ];
+    }
+  }
+</script>

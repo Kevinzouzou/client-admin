@@ -1,0 +1,240 @@
+<style lang="less">
+  page {
+    background: #FFFFFF;
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+
+  .form {
+    height: ~"108rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    display: flex;
+    align-items: center;
+    margin-left: ~"40rpx";
+    line-height: ~"108rpx";
+    .form-left {
+      display: flex;
+      align-items: center;
+      .form-left-img {
+        width: ~"18rpx";
+        height: ~"18rpx";
+      }
+      .form-label {
+        padding-left: ~"18rpx";
+        font-size: ~"30rpx";
+        color: #222222;
+        width: ~"160rpx";
+      }
+    }
+    .form-right {
+      position: relative;
+      .msg {
+        position: absolute;
+        font-size: ~"20rpx";
+        color: #EB606A;
+        top: ~"10rpx";
+      }
+    }
+  }
+
+  .form:first-child {
+    margin-top: ~"70rpx";
+  }
+
+  input {
+    font-size: ~"30rpx";
+    color: #222222;
+  }
+
+  .form_input {
+    font-size: ~"30rpx";
+    color: #9B9B9B;
+  }
+
+  .setting {
+    display: flex;
+    align-items: center;
+    padding-left: ~"40rpx";
+    padding-top: ~"50rpx";
+    .setting-img {
+      width: ~"32rpx";
+      height: ~"32rpx";
+    }
+    .setting-label {
+      padding-left: ~"20rpx";
+      font-size: ~"28rpx";
+      color: #9B9B9B;
+    }
+  }
+
+  .pp-footer {
+    height: ~"110rpx";
+    width: ~"750rpx";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    .pp-btn {
+      margin: 0 auto;
+      width: ~"690rpx";
+      height: ~"80rpx";
+      background: #C1A17B;
+      border-radius: ~"4rpx";
+      font-size: ~"32rpx";
+      line-height: ~"80rpx";
+      color: #FFFFFF;
+    }
+  }
+
+</style>
+
+<template>
+  <view class="form">
+    <view class="form-left">
+      <image src="/asserts/images/icon_bitian.png" class="form-left-img"></image>
+      <view class="form-label">员工姓名</view>
+    </view>
+    <view class="form-right">
+      <input bindinput="inputName" placeholder="请输入员工姓名"  placeholder-class="form_input" value="{{name}}"/>
+    </view>
+  </view>
+  <view class="form">
+    <view class="form-left">
+      <image src="/asserts/images/icon_bitian.png" class="form-left-img"></image>
+      <view class="form-label">联系电话</view>
+    </view>
+    <view class="form-right">
+      <input bindinput="inputPhone" placeholder="请输入联系电话" type="number" placeholder-class="form_input"
+             value="{{phone}}"/>
+      <view class="msg" wx:if="{{showMsg}}">请输入正确的电话号码</view>
+    </view>
+  </view>
+  <view class="setting">
+    <image src="{{choose?'/asserts/images/icon_shenpi_tongguo.png':'/asserts/images/icon_weixuanzhong.png'}}"
+           class="setting-img" @tap="checkChoose"></image>
+    <text class="setting-label">将该员工设为本企业管理员</text>
+  </view>
+  <view class="pp-footer">
+    <view class="pp-btn" @tap="toSubmit">
+      保存
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Contact extends wepy.page {
+    config = {
+    };
+    components = {};
+
+    data = {
+      choose: false,
+      type: '',
+      name: '',
+      phone: '',
+      showMsg: false,
+      userInfo: {}
+    };
+
+    computed = {};
+
+    methods = {
+      //改变切换状态
+      checkChoose() {
+        this.choose = !this.choose;
+      },
+      //姓名输入框
+      inputName(e) {
+        this.name = e.detail.value;
+      },
+      //电话输入框
+      inputPhone(e) {
+        this.phone = e.detail.value;
+        this.showMsg = (this.phone.length !== 11) ? true : false;
+      },
+      //保存信息
+      toSubmit() {
+        let _self = this;
+        if (!_self.name) {
+          util.toast('姓名不能为空!');
+          return;
+        }
+        if(_self.phone.length !== 11){
+          this.showMsg = true;
+          return
+        }
+        let postData = {};
+        if (_self.type === 'add') {
+          postData.name = _self.name;
+          postData.phone = _self.phone;
+          let staff = wx.getStorageSync('staff');
+          postData.enterpriseId = staff.enterpriseId;
+          postData.post = _self.choose ? '管理员' : '员工';
+          postData.addInfo = {};
+          wx.showModal({
+            content: '确定添加员工信息？',
+            success: function(res) {
+              if (res.confirm) {
+                _self.addUser(postData);
+              }
+            }
+          })
+        } else {
+          postData = _self.userInfo;
+          postData.name = _self.name;
+          postData.phone = _self.phone;
+          postData.post = _self.choose ? '管理员' : '员工';
+          wx.showModal({
+            title: '提示',
+            content: '确定修改员工信息？',
+            success: function(res) {
+              if (res.confirm) {
+                _self.updateUser(postData)
+              }
+            }
+          })
+        }
+        console.log(postData);
+      }
+    };
+
+    //添加员工方法
+    addUser(data) {
+      let _self = this;
+      api.addUser(data).then(res => {
+        _self.$navigate('./userManager');
+      });
+    };
+
+    updateUser(data) {
+      let _self = this;
+      api.updateUser(data).then(res => {
+        _self.$navigate('./userManager');
+      });
+    }
+
+    events = {};
+
+    onLoad(option) {
+      if (option.type === 'update') {
+        this.type = 'update';
+        this.userInfo = JSON.parse(option.item);
+        this.name = this.userInfo.name;
+        this.phone = this.userInfo.phone;
+        this.choose = (this.userInfo.post === '员工') ? false : true;
+        wx.setNavigationBarTitle({
+          title: '修改员工'
+        });
+        return;
+      }
+      this.type = 'add';
+      wx.setNavigationBarTitle({
+        title: '添加员工'
+      })
+    }
+
+  }
+</script>

@@ -1,0 +1,224 @@
+<style lang="less">
+  .mine-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+      height: ~"346rpx";
+      display: flex;
+      padding-left:  ~"50rpx";
+      flex-direction: column;
+      position: relative;
+
+      .bg {
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .ic-msg {
+        width: ~"88rpx";
+        height: ~"88rpx";
+        float: right;
+      }
+
+      .content {
+        height: ~"130rpx";
+        display: flex;
+        margin-top: ~"20rpx";
+
+        .content-image {
+          width: ~"130rpx";
+          height: ~"130rpx";
+          float: right;
+          border-radius: 50%;
+        }
+        .profile {
+          margin-left: ~"40rpx";
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          color: #FFFFFF;
+
+        }
+        .name {
+          font-size: ~"44rpx";
+          line-height: ~"44rpx";
+        }
+        .job {
+          font-size: ~"24rpx";
+          line-height: 1;
+          padding-top: ~"5rpx";
+        }
+        .location {
+          font-size: ~"24rpx";
+          line-height: ~"24rpx";
+        }
+      }
+    }
+    .section {
+      .one {
+        background: #ffffff;
+      }
+      .two {
+        margin-top: ~"20rpx";
+        background: #ffffff;
+      }
+      .three {
+        margin-top: ~"20rpx";
+        background: #ffffff;
+      }
+      .four {
+        margin: ~"20rpx" 0 ~"35rpx";
+        background: #ffffff;
+      }
+      .line {
+        border-top: ~"1rpx" solid #E7E7E7;
+      }
+      .item {
+        padding: 0 ~"40rpx";
+        height: ~"98rpx";
+        display: flex;
+        align-items: center;
+        font-size: ~"30rpx";
+        color: #222222;
+      }
+      .ic-title {
+        height: ~"37rpx";
+        flex: 0 0 ~"37rpx";
+
+      }
+      .title {
+        padding-left: ~"20rpx";
+        flex: 1 1 ~"120rpx";
+      }
+      .ic-arrow {
+        height: ~"24rpx";
+        flex: 0 0 ~"24rpx";
+      }
+    }
+
+  }
+</style>
+<template>
+  <view class="mine-container">
+    <view class="header">
+      <image class="bg" src="../../../asserts/images/bg_menjin.png" mode="aspectFill"></image>
+      <view>
+        <image class="ic-msg" src="../../../asserts/images/icon_tixing.png" @tap="bindMsg" mode="aspectFill"></image>
+      </view>
+      <view class="content">
+        <image src="{{userInfo.avatarUrl}}" class="content-image" mode="aspectFill"></image>
+        <view class="profile">
+          <text class="name">{{userInfo.nickName}}</text>
+          <text class="job">{{userInfo.job}}</text>
+          <text class="location">{{userInfo.location}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="one">
+        <view class="item" @tap="bindItem('wallet')">
+          <image class="ic-title" src="../../../asserts/images/icon_gerenxinxi.png"></image>
+          <text class="title">我的钱包</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+      </view>
+
+      <view class="two">
+        <view class="item" @tap="bindItem('info')">
+          <image class="ic-title" src="../../../asserts/images/icon_gerenxinxi.png"></image>
+          <text class="title">个人信息</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+        <view class="item line" @tap="bindItem('userManager')">
+          <image class="ic-title" src="../../../asserts/images/icon_yonghuguanli.png"></image>
+          <text class="title">用户管理</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+      </view>
+
+      <view class="three">
+        <view class="item" @tap="bindItem('apply')">
+          <image class="ic-title" src="../../../asserts/images/icon_wodeshenqing.png"></image>
+          <text class="title">我的申请</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+        <view class="item line" @tap="bindItem('collect')">
+          <image class="ic-title" src="../../../asserts/images/ixon_wodeshoucang.png"></image>
+          <text class="title">我的收藏</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+        <view class="item line" @tap="bindItem('sign')">
+          <image class="ic-title" src="../../../asserts/images/icon_wodebaoming.png"></image>
+          <text class="title">我的报名</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+      </view>
+
+      <view class="four">
+        <view class="item " @tap="bindItem('setting')">
+          <image class="ic-title" src="../../../asserts/images/icon_shezhi.png"></image>
+          <text class="title">设  置</text>
+          <image class="ic-arrow" src="../../../asserts/images/jinru.png"></image>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import util from '../../../utils/util';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的',
+    };
+    components = {};
+
+    data = {
+      userInfo:{
+        avatarUrl:'',
+        nickName: '',
+        job: '',
+        location: '',
+      }
+    };
+
+    computed = {};
+
+    methods = {
+      bindMsg(e) {
+        // util.toast('ppy 不听话')
+      },
+      bindItem(title, e) {
+        let path ='./'+title;
+        let token =wx.getStorageSync('token');
+        if(token){
+          this.$navigate(path)
+        }else{
+          this.$navigate('../login');
+        }
+      },
+    };
+
+
+    events = {};
+
+
+    onLoad() {
+    };
+    onShow(){
+      this.userInfo = this.$parent.globalData.ppInfo.get();
+      this.userInfo.phone = wx.getStorageSync('phone');
+    }
+  }
+</script>

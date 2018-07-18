@@ -1,0 +1,143 @@
+<style lang="less">
+  .scroll-view_H {
+    width: 100%;
+    white-space: nowrap;
+    background: #FFFFFF;
+    padding: 0 ~"25rpx";
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    z-index: 999;
+  }
+
+  .scroll-view-item_H {
+    padding: 0 ~"25rpx";
+    height: ~"88rpx";
+    display: inline-block;
+    color: #9B9B9B;
+    position: relative;
+    .pp-scroll-text {
+      height: ~"82rpx";
+      line-height: ~"82rpx";
+      font-size: ~"28rpx";
+    }
+    .pp-scroll-block {
+      position: absolute;
+      width: ~"40rpx";
+      height: ~"6rpx";
+      background: #C1A17B;
+      /*margin: 0 auto;*/
+      left: 50%;
+      margin-left: ~"-20rpx";
+      bottom: 0;
+    }
+  }
+
+  .pp-scroll-high {
+    position: absolute;
+    margin-top: ~"88rpx";
+  }
+
+  .pp-scroll-state {
+    color: #222222;
+  }
+</style>
+<template>
+  <view class="pp-scroll">
+    <scroll-view class="scroll-view_H" scroll-x style="width: 100%">
+      <repeat for="{{titleList}}" index="index" item="item">
+        <view class="scroll-view-item_H {{item.state?'pp-scroll-state':''}}" id="{{item.tag}}"
+              @tap="changeSer('{{item.name}}')">
+          <view class="pp-scroll-text">
+            {{item.name}}
+          </view>
+          <view class="pp-scroll-block" wx:if="{{item.state}}"></view>
+        </view>
+      </repeat>
+    </scroll-view>
+  </view>
+  <view class="pp-scroll-high">
+    <ppHigh :highList.sync="highList" class="pp-scroll-high" @toDetail.user="toDetail">
+    </ppHigh>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppHigh from '../../components/ppHigh';
+  import api from '../../api/homeApi';
+  import util from '../../utils/util';
+
+  export default class Social extends wepy.page {
+    config = {
+      navigationBarTitleText: '高端服务',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppHigh: ppHigh
+
+    };
+
+    data = {
+      highList: [],
+      titleList: []
+    };
+
+    computed = {};
+
+    methods = {
+      //点击查看详情
+      toDetail(type, id) {
+        this.$navigate('/pages/component/template', {id: id, url: type});
+      },
+      //点击不同的活动
+      changeSer(subType) {
+        this.getHighList(subType);
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.getType();
+
+    };
+
+    getHighList(subType) {
+      let _self = this;
+      wx.showLoading({title: '正在加载中'});
+      api.queryInfo({ type:'高端活动',subType: subType }).then((res) => {
+        wx.hideLoading();
+        _self.highList = res;
+        _self.$apply();
+      });
+    }
+
+    //获取高端活动信息
+    getType() {
+      let _self = this;
+      wx.showLoading({title: '正在加载中...'});
+      api.getType({ pname: '高端活动' }).then(res => {
+        wx.hideLoading();
+        res.forEach(item => {
+          _self.titleList.push({ name: item.name });
+        });
+        _self.titleList[0].state = true;
+        _self.getHighList(_self.titleList[0].name);
+        this.$apply();
+      });
+    }
+
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage() {
+
+    }
+
+  }
+</script>

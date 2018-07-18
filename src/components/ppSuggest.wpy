@@ -1,0 +1,212 @@
+<style lang="less">
+  .pp-suggest {
+    width: 100%;
+    background: #FFFFFF;
+    margin-top: ~"20rpx";
+    .pp-suggest-item {
+      padding: 0 ~"40rpx";
+      width: 100%;
+      height: ~"124rpx";
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: ~"1rpx" #f4f4f4 solid;
+      .pp-su-text {
+        .pp-su-time {
+          font-size: ~"30rpx";
+          color: #333333;
+          height: ~"30rpx";
+          line-height: ~"30rpx";
+        }
+        .pp-su-title {
+          font-size: ~"24rpx";
+          color: #222222;
+          margin-top: ~"10rpx";
+          height: ~"24rpx";
+          line-height: ~"24rpx";
+        }
+      }
+      .pp-su-state {
+        font-size: ~"30rpx";
+      }
+    }
+    .pp-su-desc {
+      margin-top: ~"40rpx";
+      display: flex;
+      justify-content: flex-start;
+      font-size: ~"28rpx";
+      padding: 0 ~"40rpx";
+      .pp-su-title {
+        width: ~"152rpx";
+        color: #222222;
+      }
+      .pp-info {
+        width: ~"515rpx";
+        color: #333333;
+        line-height: ~"40rpx";
+      }
+    }
+    .pp-img {
+      padding: ~"20rpx" ~"40rpx" ~"40rpx";
+      .pp-su-imgs {
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: ~"150rpx";
+        .pp-su-img {
+          width: ~"160rpx";
+          margin-right: ~"10rpx";
+          height: ~"160rpx";
+          margin-top: ~"10rpx";
+        }
+      }
+    }
+    .pp-su-desc {
+      margin-top: ~"40rpx";
+      display: flex;
+      justify-content: flex-start;
+      font-size: ~"28rpx";
+      padding: 0 ~"40rpx";
+      align-items: center;
+      .pp-su-title {
+        width: ~"152rpx";
+        color: #222222;
+      }
+      .pp-info {
+        width: ~"515rpx";
+        color: #333333;
+        line-height: ~"40rpx";
+      }
+    }
+    .pp-info-time {
+      font-size: ~"24rpx";
+      height: ~"24rpx";
+      line-height: ~"24rpx";
+      margin-top: ~"20rpx";
+      margin-bottom: ~"53rpx";
+      color: #9B9B9B;
+    }
+  }
+
+  .pp-info-top {
+    display: flex;
+    justify-content: flex-start;
+    font-size: ~"28rpx";
+    padding-top: ~"40rpx";
+    margin: 0 ~"40rpx";
+    border-top: ~"1rpx" solid #e7e7e7;
+    .pp-su-title {
+      width: ~"152rpx";
+      color: #75AE36;
+      .pp-su-img {
+        width: ~"120rpx";
+        height: ~"40rpx";
+      }
+      .pp-su-txt {
+        width: ~"120rpx";
+        border: ~"1rpx" solid #75AE36;
+        border-radius: ~"4rpx";
+        text-align: center;
+        font-size: ~"24rpx";
+      }
+    }
+    .pp-info {
+      width: ~"515rpx";
+      color: #333333;
+      line-height: ~"40rpx";
+    }
+    .pp-info-time {
+      font-size: ~"24rpx";
+      height: ~"24rpx";
+      line-height: ~"24rpx";
+      margin-top: ~"20rpx";
+      margin-bottom: ~"53rpx";
+      color: #9B9B9B;
+    }
+  }
+
+  .yellow {
+    color: #75AE36;
+  }
+
+  .red {
+    color: #EB606A;
+  }
+</style>
+<template>
+  <repeat for="{{suggestList}}" index="index" item="item">
+    <view class="pp-suggest">
+      <view class="pp-suggest-item">
+        <view class="pp-su-text">
+          <view class="pp-su-time">申请时间</view>
+          <view class="pp-su-title">{{item.createTime}}</view>
+        </view>
+        <view class="pp-su-state yellow" wx:if="{{item.addInfo.next===0}}">
+          已回复
+        </view>
+        <view class="pp-su-state red" wx:else>
+          处理中
+        </view>
+      </view>
+      <view class="pp-su-desc">
+        <view class="pp-su-title">
+         问题描述
+        </view>
+        <view class="pp-info">
+          {{item.addInfo.remark}}
+        </view>
+      </view>
+      <view class="pp-img">
+        <view class="pp-su-imgs">
+          <repeat for="{{item.addInfo.images}}" item="childItem" index="index" >
+            <image src="{{childItem}}" class="pp-su-img" @tap="previewImg('{{item.addInfo.images}}','{{childItem}}')"></image>
+          </repeat>
+        </view>
+      </view>
+      <view class="pp-info-top" hidden="{{item.state!=='待处理'}}">
+        <view class="pp-su-title ">
+          <image class="pp-su-img" src="../asserts/images/icon_toujianfankui.png"
+                 mode='aspectFill'></image>
+        </view>
+        <view class="pp-info ">
+          <view class="pp-info-desc">
+            {{item.addInfo.feedback}}
+          </view>
+          <view class="pp-info-time">
+            反馈时间：{{item.addInfo.allocationTime}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+<script>
+  import wepy from 'wepy';
+
+
+  export default class _image extends wepy.component {
+    props = {
+      suggestList:{
+        type: Array,
+        default: []
+      }
+    };
+    data = {
+    };
+
+    computed = {};
+
+    methods = {
+      //查看图片
+      previewImg(itemList, item) {
+        this.$emit("previewImg",itemList, item);
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+    };
+
+  }
+</script>

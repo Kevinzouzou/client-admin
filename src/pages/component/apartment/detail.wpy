@@ -1,0 +1,163 @@
+<style lang="less">
+  .slide-image {
+    width: ~"750rpx";
+    height: ~"353rpx";
+  }
+
+  .apart {
+    height: ~"433rpx";
+    background: #FFFFFF;
+    .apart-title {
+      margin-left: ~"40rpx";
+      height: ~"160rpx";
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .apart-txt {
+        font-size: ~"36rpx";
+        color: #222222;
+        line-height: ~"40rpx";
+      }
+      .apart-price {
+        font-size: ~"28rpx";
+        color: #EB606A;
+        padding-top: ~"20rpx";
+        line-height: ~"32rpx";
+        .apart-refer {
+          padding-left: ~"16rpx";
+          font-size: ~"20rpx";
+          color: #9B9B9B;
+        }
+      }
+    }
+    .apart-info {
+      padding: ~"25rpx" ~"40rpx" 0;
+      font-size: ~"24rpx";
+      color: #333333;
+      .info-item {
+        display: flex;
+        align-items: center;
+        height: ~"54rpx";
+        .info-title {
+          width: ~"160rpx";
+        }
+      }
+      .info-dial {
+        justify-content: space-between;
+        .info-dial-img {
+          width: ~"36rpx";
+          height: ~"36rpx";
+        }
+        .info-title {
+          display: inline-block;
+          width: ~"160rpx";
+        }
+      }
+    }
+  }
+  .environment{
+    margin-top: ~"20rpx";
+    padding: 0 ~"40rpx";
+    background: #FFFFFF;
+    .environ-title{
+      height: ~"89rpx";
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      font-size: ~"30rpx";
+      line-height: ~"89rpx";
+      color: #222222;
+    }
+    .environ-content{
+      font-size: ~"24rpx";
+      color: #333333;
+      line-height: ~"32rpx";
+      padding: ~"20rpx" 0;
+    }
+  }
+</style>
+<template>
+  <!--轮播图-->
+  <swiper indicator-dots="{{true}}"
+          autoplay="{{true}}" interval="{{5000}}" duration="{{1000}}">
+    <block wx:for="{{info.addInfo.images}}" wx:key="{{index}}">
+      <swiper-item>
+        <image src="{{item}}" class="slide-image" width="375" height="177"/>
+      </swiper-item>
+    </block>
+  </swiper>
+  <view class="apart">
+    <view class="apart-title">
+      <view class="apart-txt">LOFT时尚精修公寓</view>
+      <view class="apart-price">
+        <text>￥1200.00元 ~ ￥3500.00元/月</text>
+        <text class="apart-refer">(参考月租)</text>
+      </view>
+    </view>
+    <view class="apart-info">
+      <view class="info-item">
+        <text class="info-title">地点</text>
+        <text>东莞市常平镇松湖大道1000号</text>
+      </view>
+      <view class="info-item">
+        <text class="info-title">小区户型</text>
+        <text>东莞市常平镇松湖大道1000号</text>
+      </view>
+      <view class="info-item">
+        <text class="info-title">租房联系人</text>
+        <text>东莞市常平镇松湖大道1000号</text>
+      </view>
+      <view class="info-item info-dial">
+        <view>
+          <text class="info-title">联系人电话</text>
+          <text>13920203939</text>
+        </view>
+        <image src="/asserts/images/icon_bodadianhua@2x.png" class="info-dial-img" @tap="call"></image>
+      </view>
+    </view>
+  </view>
+  <view class="environment">
+    <view class="environ-title">小区环境</view>
+    <view class="environ-content">
+      逗号公寓行南路店位于行南路349弄48号，靠近外高桥保税区，地铁站步行可到，周边工作超便捷~周边辐射阳光天地生活广场、欧尚、金海马家居等购物生活超便捷，公寓内将设有闪电购购物点，一体化生活无压力。品牌大面积健身房步行1分钟即到，健身休闲娱乐一站式，工作生活两相宜。逗号公寓行南路店位于行南路349弄48号，靠近外高桥保税区，地铁站步行可到，周边工作超便捷~
+    </view>
+  </view>
+  <view class="environment" style="margin-bottom: 20rpx">
+    <view class="environ-title">备注说明</view>
+    <view class="environ-content">
+      参考月租只是根据调查而定的大概范围，具体房租需与租房联系人联系，根据实际情况以及房源具体条件、房价市场而定    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import util from '../../../utils/util';
+  import api from '../../../api/homeApi';
+
+  export default class Login extends wepy.page {
+    config = {
+      navigationBarTitleText: '公寓详情'
+    };
+    components = {};
+
+    data = {
+      info: {}
+    };
+
+    computed = {};
+
+    methods = {
+      //拨打电话
+      call(){
+        wx.makePhoneCall({
+          phoneNumber: '1340000' //仅为示例，并非真实的电话号码
+        })
+      }
+    };
+    events = {};
+
+    onLoad(params) {
+      this.info = JSON.parse(params.item);
+    };
+
+  }
+</script>

@@ -1,0 +1,29 @@
+<style lang="less">
+
+</style>
+<template>
+
+  <image src="{{src}}"  mode="{{mode}} || 'aspectFill'"></image>
+</template>
+<script>
+  import wepy from 'wepy'
+
+
+  export default class _image extends wepy.component {
+    props = {
+      src: {
+        type:String,
+        default: null
+      },
+      mode: String,
+    };
+    data = {};
+
+    events = {};
+
+    methods = {};
+
+    onLoad() {
+    }
+  }
+</script>

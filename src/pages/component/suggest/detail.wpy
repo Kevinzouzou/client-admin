@@ -1,0 +1,64 @@
+<style lang="less">
+
+</style>
+<template>
+  <ppSuggest :suggestList.sync="suggestList" @previewImg.user="previewImg"></ppSuggest>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppSuggest from '../../../components/ppSuggest';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util'
+
+  export default class Detail extends wepy.page {
+    config = {
+      navigationBarTitleText: '投诉建议记录',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppSuggest:ppSuggest
+    };
+
+    data = {
+      suggestList: []
+    };
+
+    computed = {};
+
+    methods = {
+      //预览图片
+      previewImg(itemList, item){
+        wx.previewImage({
+          current: item, // 当前显示图片的http链接
+          urls: itemList // 需要预览的图片http链接列表
+        })
+      },
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.getList();
+    };
+
+    getList() {
+      api.getSerInfo({userId: wx.getStorageSync('userId'), type:'投诉建议'}).then((res)=>{
+        this.suggestList = res;
+        this.$apply();
+      });
+    }
+
+    /**
+     * 监听用户下拉动作
+     */
+    onPullDownRefresh() {
+      setTimeout((arg) => {
+        wx.stopPullDownRefresh();
+      }, 300);
+    };
+
+  }
+</script>

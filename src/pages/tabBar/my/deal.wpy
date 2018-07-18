@@ -1,0 +1,354 @@
+<style lang="less">
+  @import "../../../asserts/style/form";
+
+  page {
+    background: #FFFFFF;
+  }
+
+  .pp-info-form {
+    padding-top: ~"54rpx";
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+
+  .pp-cell {
+    line-height: ~"110rpx";
+    height: ~"110rpx";
+    font-size: ~"30rpx";
+  }
+
+  .pp-cell .pp-label {
+    width: ~"100rpx"
+  }
+
+  .pp-type-check {
+    display: flex;
+    height: ~"110rpx";
+    justify-content: space-between;
+    margin: 0 ~"40rpx";
+    align-items: center;
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    .pp-type-icon {
+      font-size: ~"30rpx";
+      color: #222222;
+    }
+    .pp-check-img {
+      width: ~"32rpx";
+      height: ~"32rpx";
+    }
+  }
+
+  .pp-footer {
+    height: ~"110rpx";
+    width: ~"750rpx";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    .pp-btn {
+      margin: 0 auto;
+      width: ~"690rpx";
+      height: ~"80rpx";
+      background: #C1A17B;
+      border-radius: ~"4rpx";
+      font-size: ~"32rpx";
+      line-height: ~"80rpx";
+      color: #FFFFFF;
+    }
+  }
+
+  .input {
+    font-size: ~"30rpx";
+  }
+
+  .pp-input-type {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: ~"560rpx";
+    .pp-input-more {
+      width: ~"44rpx";
+      height: ~"44rpx";
+    }
+  }
+
+  .pp-input-code {
+    width: ~"200rpx";
+    font-size: ~"28rpx";
+    color: #F53252;
+    text-align: right;
+  }
+
+  .pp-info {
+    width: ~"124rpx";
+  }
+
+  .pp-input-cert {
+    font-size: ~"28rpx";
+    color: #F53252;
+  }
+
+  .pp-phone {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .pp-phone-img {
+      margin-top: ~"254rpx";
+      width: ~"90rpx";
+      height: ~"143rpx";
+    }
+    .pp-phone-txt {
+      margin-top: ~"54rpx";
+      font-size: ~"28rpx";
+      color: #2B2B2B;
+      line-height: ~"40rpx";
+      height: ~"40rpx";
+    }
+    .pp-phone-num {
+      margin-top: ~"19rpx";
+      font-size: ~"64rpx";
+      color: #2B2B2B;
+      height: ~"64rpx";
+      line-height: ~"64rpx";
+    }
+  }
+</style>
+<template>
+  <view class="pp-info-form" hidden="{{type==='phone'}}">
+    <view class="pp-cell pp-cells" wx:if="{{type==='nickname'}}">
+      <view class="pp-label">
+        <text class="pp-label-text">昵称</text>
+      </view>
+      <view class="pp-input">
+        <input bindinput="inputNickName" placeholder="输入您的昵称" placeholder-class="input" id="nickname"
+               value="{{userInfo.nickName}}" maxlength="16"/>
+      </view>
+    </view>
+    <view class="pp-cell pp-cells" wx:if="{{type==='job'}}">
+      <view class="pp-label">
+        <text class="pp-label-text">职业</text>
+      </view>
+      <view class="pp-input">
+        <input bindinput="inputLocation" placeholder="输入职业（如：财务、程序员、人力）" placeholder-class="input" id="job"
+               value="{{userInfo.location}}" maxlength="16"/>
+      </view>
+    </view>
+    <!--修改性别-->
+    <repeat for="{{sexList}}" index="index" item="item">
+      <view class="pp-type-check" @tap="changeSelect('{{index}}')" wx:if="{{type==='sex'}}">
+        <view class="pp-type-icon">
+          <text>{{item.name}}</text>
+        </view>
+        <view class="pp-check-icon">
+          <image
+            src=" {{item.state?'../../../asserts/images/icon_weixuanzhong.png':'../../../asserts/images/icon_xuanzhong.png'}}"
+            class="pp-check-img"></image>
+        </view>
+      </view>
+    </repeat>
+    <!--修改生日-->
+    <view class="pp-cell pp-cells" hidden="{{type!=='birthday'}}">
+      <view class="pp-label">
+        <text class="pp-label-text">生日</text>
+      </view>
+      <view class="pp-input">
+        <picker mode="date" value="{{startDate}}" start="1918-01-01" end="2018-05-28" @change="bindStartDateChange">
+          <view class="pp-input-check">
+            <view>{{!startDate ? '请选择日期' : startDate}}
+            </view>
+            <view>
+              <image src="../../../asserts/images/icon_xialaxuanze.png" class="pp-input-img"></image>
+            </view>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view wx:if="{{type==='changePhone'}}">
+      <view class="pp-cell pp-cells">
+        <view class="pp-info">
+          <text class="pp-label-text">原手机</text>
+        </view>
+        <view class="pp-input">
+          <view class="pp-input-type">
+            <view>{{phone}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="pp-cell pp-cells">
+        <view class="pp-info">
+          <text class="pp-label-text">验证码</text>
+        </view>
+        <view class="pp-input">
+          <view class="pp-input-type">
+            <input bindinput="inputPlace" placeholder="请输入验证码" placeholder-class="input"/>
+            <view class="pp-input-code" @tap="clickVerify" hidden="{{times!==0}}">
+              获取验证码
+            </view>
+            <view class="pp-input-code pp-code" hidden="{{times===0}}">
+              {{times}}s
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+  <!--手机号信息-->
+  <view hidden="{{type!=='phone'}}">
+    <view class="pp-phone">
+      <image src="../../../asserts/images/ixon_genghuanshoujihao.png" class="pp-phone-img" mode="aspectFill"></image>
+    </view>
+    <view class="pp-phone">
+      <view class="pp-phone-txt">
+        您已绑定手机号
+      </view>
+    </view>
+    <view class="pp-phone">
+      <view class="pp-phone-num">
+        {{phone}}
+      </view>
+    </view>
+  </view>
+
+  <view class="pp-footer">
+    <view class="pp-btn" @tap="toSubmit()">
+      {{btnText}}
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class My extends wepy.page {
+    config = {
+      navigationBarTitleText: '个人信息-修改'
+    };
+    components = {};
+
+    data = {
+      type: '',
+      sexList: [],
+      btnText: '确认',
+      startDate: '', //出生日期
+      phone: '',
+      userInfo: {},
+      interval: 0,
+      params: {
+        nickname: '',
+        phone: '',
+        password: '',
+        job: '',
+        rePassword: '',
+        oldPassword: ''
+      },
+      times: 0
+    };
+
+    computed = {};
+
+    methods = {
+      //昵称
+      inputNickName(e) {
+        this.userInfo.nickName = e.detail.value;
+      },
+      //职位
+      inputLocation(e) {
+        this.userInfo.location = e.detail.value;
+      },
+      //选择性别
+      changeSelect(index) {
+        this.sexList.forEach((item) => {
+          item.state = true;
+        });
+        this.sexList[index].state = false;
+        this.userInfo.gender = index + 1;
+      },
+      //选择日期
+      bindStartDateChange(e) {
+        this.startDate = e.detail.value;
+        this.userInfo.birthday = this.startDate;
+      },
+      //获取验证码
+      clickVerify() {
+        if (this.times === 0) {
+          util.toast('验证码已发送');
+          let self = this;
+          this.times = 60;
+          api.sendCode({ phone: this.params.phone }).then((res) => {
+          });
+          this.interval = setInterval(() => {
+            self.times--;
+            self.$apply();
+            if (self.times === 0) {
+              clearInterval(self.interval);
+            }
+          }, 1000);
+        }
+      },
+      //提交信息
+      toSubmit() {
+        let _self = this;
+        if (this.type === 'phone') {
+          // this.type = 'changePhone';
+          wx.navigateBack({
+            delta: 1
+          });
+        } else {
+          let info = _self.userInfo;
+          let postData = {};
+          postData.addInfo = info;
+          api.changeUserInfo(postData).then(res => {
+            _self.$parent.globalData.ppInfo.set(info);
+            util.toast("提交成功！");
+            this.$apply();
+            wx.navigateBack({
+              delta: 1
+            });
+          });
+        }
+      }
+    };
+
+    events = {};
+
+    onUnload() {
+      if (this.interval === 0) return;
+      clearInterval(this.interval);
+    };
+
+    onLoad(option) {
+      this.getList();
+      if (option.type === 'phone') {
+        this.btnText = '返回';
+      }
+      this.type = option.type;
+      this.userInfo = this.$parent.globalData.ppInfo.get();
+      this.startDate = this.userInfo.birthday;
+      let tellPhone = this.userInfo.phone;
+      this.phone = tellPhone.substr(0, 3) + '****' + tellPhone.substr(7);
+      this.sexList.forEach((item, index)=>{
+        if(item.name === this.userInfo.gender){
+          this.sexList[index].state = false;
+        }
+      });
+
+    }
+
+    getList() {
+      this.sexList = [
+        {
+          name: '男',
+          state: true
+        }, {
+          name: '女',
+          state: true
+        }, {
+          name: '保密',
+          state: true
+        }
+      ];
+    }
+  }
+</script>

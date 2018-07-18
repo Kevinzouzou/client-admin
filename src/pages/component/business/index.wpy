@@ -1,0 +1,81 @@
+<style lang="less">
+  @import "../../../asserts/style/list";
+
+  .enter-content:first-child {
+    margin-top: 0;
+  }
+
+  .pp-enter:first-child {
+    margin-top: 0;
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+</style>
+<template>
+  <repeat for="{{list}}" index="index" item="item">
+    <view class="pp-enter" @tap="clickTo('{{item}}')">
+      <view class="enter-content">
+        <view class="pp-enter-info">
+          <view class="pp-list pp-remark">
+            <view class="pp-list-item">
+              预约服务
+            </view>
+            <view class="pp-list-con pp-list-remark">
+              {{item.addInfo.target.addInfo.title}}
+            </view>
+          </view>
+          <view class="pp-list pp-remark">
+            <view class="pp-list-item">
+              预约时段
+            </view>
+            <view class="pp-list-con pp-list-remark">
+              {{item.addInfo.target.serveDate}} {{item.addInfo.target.period}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              预约公司
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.enterprise}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '预约记录'
+    };
+    components = {};
+
+    data = {
+      list: ['', '']
+    };
+
+    computed = {};
+
+    methods = {
+      //跳转到详情
+      clickTo(item) {
+        this.$navigate('./detail', { item: JSON.stringify(item) });
+      }
+    };
+
+    events = {};
+
+    onLoad() {
+      let self = this;
+      api.myBusinessCource({}).then(res => {
+        self.list = res;
+        self.$apply();
+        console.log(res);
+      });
+    }
+  }
+</script>

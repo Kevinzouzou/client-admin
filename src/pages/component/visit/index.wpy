@@ -1,0 +1,153 @@
+<style lang="less">
+  @import "../../../asserts/style/commit";
+  @import "../../../asserts/style/form";
+  page{
+    background: #172029;
+  }
+  .pp-com-size {
+    height: ~"976rpx";
+  }
+
+  .pp-enter-title {
+    width: ~"630rpx";
+    height: ~"125rpx";
+    line-height: ~"125rpx";
+    font-size: ~"36rpx";
+    color: #222222;
+    text-align: center;
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    margin: 0 auto;
+  }
+  .pp-mr200{
+    height:  ~"303rpx";
+    border-bottom:  ~"1rpx" solid #e7e7e7;
+    margin: 0  ~"40rpx";
+  }
+</style>
+<template>
+  <view class="pp-commit">
+    <view class="pp-commit-img">
+      <image src="http://lmstore.oss-cn-shenzhen.aliyuncs.com/suggesstions/1527229198247.jpg" class="pp-commit-img"></image>
+      <!--<view class="pp-commit-img"></view>-->
+      <view class="pp-commit-into" @tap="showMore">申请记录</view>
+      <image src="../../../asserts/images/pic_mask_r.png" class="pp-mark-img"></image>
+      <view class="pp-com-form pp-com-size">
+        <view class="pp-enter-title">
+          访客邀请
+        </view>
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">称呼</text>
+          </view>
+          <view class="pp-input">
+            <input bindinput="inputPlace" placeholder="请输入称呼" placeholder-class="input" bindinput="inputChange"
+                   id="nickname" value="{{params.nickname}}" maxlength="24"/>
+          </view>
+        </view>
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">手机号</text>
+          </view>
+          <view class="pp-input">
+            <input bindinput="inputPlace" placeholder="请输入手机号" placeholder-class="input" bindinput="inputChange" type="number"
+                   id="phone" value="{{params.phone}}" maxlength="24"/>
+          </view>
+        </view>
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">拜访时间</text>
+          </view>
+          <view class="pp-input">
+            <picker mode="date" value="{{startDate}}" start="2018-01-01" end="2019-09-01" @change="bindStartDateChange">
+              <view class="pp-input-check">
+                <view>{{!startDate? '请点击选择':startDate}}
+                </view>
+                <view>
+                  <image src="../../../asserts/images/icon_xialaxuanze.png" class="pp-input-img"></image>
+                </view>
+              </view>
+            </picker>
+          </view>
+        </view>
+        <view class="pp-mr200">
+        </view>
+        <view class="pp-form-msg">
+          温馨提示：1、门禁会以短信形式发送至您客户的手机；2、客户打开链接地址，即可生成门禁二维码；3、门禁在拜访时间的前30分钟生效，当天18:00后失效。        </view>
+        <view class='pp-btn pp-mb20'>
+          <veiw @tap="dealTask()" class="pp-btn-text {{isClick?'pp-color':''}}">提交</veiw>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import util from '../../../utils/util';
+  import api from  '../../../api/homeApi'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '访客邀请',
+    };
+    components = {};
+
+    data = {
+      startDate:'',
+      params:{
+        phone: '',
+        nickname:''
+      },
+      isClick:false
+    };
+
+    computed = {};
+
+    methods = {
+      showMore() {
+        this.$navigate('./detail');
+      },
+      //输入框变化
+      inputChange(e) {
+        let key = e.currentTarget.id;
+        this.params[key] = e.detail.value;
+        this.isClick = util.isCanNext(this.params);
+      },
+      //提交记录
+      dealTask() {
+        if (!this.isClick) return;
+        let addInfo = {};
+        addInfo.phone = this.params.phone;
+        addInfo.name = this.params.nickname;
+        addInfo.date = this.startDate;
+        addInfo.next = 1;
+        let postData = {};
+        postData.userId = wx.getStorageSync('userId');
+        postData.stage = "未完结";
+        postData.type = "访客申请";
+        postData.addInfo = addInfo;
+        api.addSerInfo(postData).then((res) => {
+          this.params = {};
+          this.startDate = '';
+          this.isClick = false;
+          this.$apply();
+          util.toast("提交成功！");
+        }).catch(err=>{
+          util.toast("服务器开小差了！")
+        });
+      },
+      bindStartDateChange(e) {
+        this.startDate = e.detail.value;
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+
+    }
+
+  }
+</script>

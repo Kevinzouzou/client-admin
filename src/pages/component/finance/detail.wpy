@@ -1,0 +1,83 @@
+<style lang="less">
+  @import "../../../asserts/style/list";
+  .enter-content{
+    margin-top: 0;
+  }
+  .pp-enter{
+    margin-top: 0;
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+</style>
+<template>
+    <view class="pp-enter">
+      <view class="enter-content">
+        <view class="pp-enter-info">
+          <view class="pp-list pp-remark">
+            <view class="pp-list-item">
+              申请项目
+            </view>
+            <view class="pp-list-con pp-list-remark">
+              {{info.addInfo.target.addInfo.title}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              申请公司
+            </view>
+            <view class="pp-list-con">
+              {{info.addInfo.enterprise}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              申请人
+            </view>
+            <view class="pp-list-con">
+              {{info.addInfo.name}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              联系电话
+            </view>
+            <view class="pp-list-con">
+              {{info.addInfo.phone}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              申请时间
+            </view>
+            <view class="pp-list-con">
+              {{info.createTime}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '预约详情'
+    };
+    components = {};
+
+    data = {
+      info:{}
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad(params) {
+      this.info = JSON.parse(params.item);
+    }
+  }
+</script>

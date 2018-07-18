@@ -1,0 +1,208 @@
+<style lang="less">
+  @import './asserts/style/base';
+  @import './asserts/style/common';
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import 'wepy-async-function';
+  import {setStore} from 'wepy-redux';
+  import configStore from './store';
+  import api from './ppSwallow/ppSwallow';
+  import storeUtil from './utils/storeUtil';
+
+
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/tabBar/index', //首页
+        'pages/tabBar/my/wallet', //我的钱包
+        'pages/tabBar/shareApp/pay', //共享中心支付
+        'pages/tabBar/shareApp/index', //共享中心首页
+        'pages/tabBar/shareApp/myAppoint', //共享中预约
+        'pages/tabBar/shareApp/detail', //共享中心详情
+        'pages/tabBar/shareApp/record', //共享中心预约记录
+        'pages/tabBar/shareApp/apply', //共享中心申请
+        'pages/tabBar/my/index', //我的
+        'pages/tabBar/template',
+        'pages/tabBar/my/userInfo', //添加修改用户信息
+        'pages/tabBar/entrance', //门禁
+        'pages/tabBar/service', //服务
+        'pages/tabBar/my/collect', //我的收藏
+        'pages/tabBar/my/sign', //我的报名
+        'pages/tabBar/my/info', //个人信息
+        'pages/tabBar/my/apply', //我的申请
+        'pages/tabBar/my/userManager', //用户管理
+        'pages/tabBar/my/deal', //个人信息-修改
+        'pages/tabBar/my/setting', //设置
+        'pages/tabBar/my/suggest', //意见反馈
+        'pages/tabBar/my/about', //关于我们
+        'pages/tabBar/my/company', //企业选择-列表页面
+        'pages/tabBar/my/consumeRecord', //消费记录
+        'pages/tabBar/my/rechargeRecord', //充值记录
+        'pages/tabBar/my/setPassword', //设置密码
+        'pages/tabBar/my/forgetPassword', //忘记密码
+        'pages/tabBar/my/recharge', //充值
+        'pages/tabBar/login' //登录
+      ],
+      subPackages: [
+        {
+          root: 'pages/component/',
+          pages: [
+            'apartment/index', //公寓列表页
+            'apartment/detail', //公寓详情页
+            'homeMaking/myJoin', //我的拼单
+            'homeMaking/horticulture', //园艺服务
+            'homeMaking/cleanSer', //保洁服务
+            'homeMaking/moveSer', //搬迁服务
+            'homeMaking/decorate', //装修服务
+            'homeMaking/join', //拼单
+            'homeMaking/joinDetail', //拼单详情
+            'notice',  //园区公告和惠通知
+            'entrance/index',  //入驻申请
+            'entrance/detail',  //入驻申请记录
+            'fee/index',  //物业费查询
+            'fee/detail',  //物业费详情
+            'repair/index',  //物业报修
+            'repair/detail',  //物业报修记录
+            'tour/index',  //旅行申请
+            'tour/detail',  //旅行申请记录
+            'visit/index',  //访客邀请
+            'visit/detail',  //访客记录
+            'suggest/index',  //投诉建议
+            'suggest/detail',  //投诉建议记录
+            'decorate/index',  //装修申请
+            'decorate/detail',  //装修申请记录
+            'carService/index',  //停车服务
+            'carService/applyRecord',  //停车 缴费记录
+            'carService/pay',  //停车 支付
+            'information',  //信息化服务,
+            'high',  //高端服务,
+            'template',  //h5页面模板,
+            'finance',  //金融服务,
+            'finance/index',  //金融服务-预约记录
+            'finance/detail',  //金融服务-详情
+            'business/appoint',  //商务服务-预约时间,
+            'business/index',  //商务服务-预约记录
+            'business/detail',  //服务服务
+            'business' //商务服务,
+          ]
+        }
+      ],
+      window: {
+        backgroundTextStyle: 'dark',
+        navigationBarBackgroundColor: '#ffffff',
+        navigationBarTextStyle: 'black',
+        backgroundColor: '#ffffff'
+      },
+      tabBar: {
+        color: '#CBCBCB',
+        borderStyle: 'white',
+        selectedColor: '#222222',
+        list: [
+          {
+            pagePath: 'pages/tabBar/index',
+            text: '首页',
+            iconPath: 'asserts/images/icon_daohang_shouye_nor.png',
+            'selectedIconPath': 'asserts/images/icon_daohang_shouye_sel.png'
+          }, {
+            pagePath: 'pages/tabBar/service',
+            text: '服务',
+            iconPath: 'asserts/images/icon_daohang_fuwu_nor.png',
+            'selectedIconPath': 'asserts/images/icon_daohang_fuwu_sel.png'
+          },
+          {
+            pagePath: 'pages/tabBar/my/index',
+            text: '我的',
+            iconPath: 'asserts/images/icon_daohang_wode_nor.png',
+            selectedIconPath: 'asserts/images/icon_daohang_wode_sel.png'
+          }
+        ]
+      },
+      networkTimeout: {
+        request: 10000,
+        connectSocket: 10000,
+        uploadFile: 10000,
+        downloadFile: 10000
+      },
+      debug: false
+    };
+
+    globalData = {
+      ppInfo: {
+        get() {
+          return storeUtil.getPPInfo();
+        },
+        set(obj) {
+          storeUtil.setPPInfo(obj)
+        }
+      },
+      token: ''
+    }
+    ;
+
+    constructor() {
+      super();
+      this.use('requestfix');
+    }
+
+    onLaunch() {
+      let _self = this;
+      _self.getUserInfo();
+      let res = wx.getSystemInfoSync();
+      wx.setStorageSync('winHeight',res.windowHeight);
+      wx.login({
+        success: function (res) {
+          if (res.code) {
+            wx.setStorageSync('openId', res.code);
+            api.post('user/wxCodeLogin', {code: res.code}).then((res) => {
+              wx.setStorageSync('token', res.token);
+              wx.setStorageSync('userId', res.userId);
+              wx.setStorageSync('staff',res.staff);
+              let ppInfo = res.addInfo;
+              ppInfo.phone = res.phone;
+              _self.globalData.ppInfo.set(ppInfo);
+            }).catch((res) => {
+
+            });
+          } else {
+          }
+        }
+      });
+    }
+
+    getUserInfo() {
+      let _self = this;
+      wx.getUserInfo({
+        success: function (res) {
+          let ppInfo = res.userInfo;
+          ppInfo.phone = '';
+          let gender = [];``;
+          gender = ['男','女'];
+          ppInfo.gender = gender[1];
+          _self.globalData.ppInfo.set(ppInfo);
+        },
+        fail: (req) => {
+          wx.showModal({
+            title: '您未授权登陆',
+            content: '请设置修改登陆，然后获取用户信息',
+            success: (res) => {
+              if (res.confirm) {
+                wx.openSetting({
+                  success: (res) => {
+                    res.authSetting = {
+                      "scope.userInfo": true,
+                    };
+                  }
+                })
+              } else if (res.cancel) {
+                console.log('用户点击取消')
+              }
+            }
+          })
+        }
+      });
+    }
+
+  }
+</script>

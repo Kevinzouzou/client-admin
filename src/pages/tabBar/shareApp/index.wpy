@@ -1,0 +1,192 @@
+<style lang="less">
+  @import "../../../asserts/style/repair.less";
+
+  .join {
+    background: #FFFFFF;
+    margin-top: ~"20rpx";
+    padding: ~"25rpx" 0;
+    .join-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: ~"10rpx" ~"30rpx";
+      text-align: right;
+      text {
+        height: ~"28rpx";
+        line-height: ~"28rpx";
+      }
+    }
+  }
+
+  .join-state {
+    background: #FFFFFF;
+    height: ~"80rpx";
+    border-top: ~"1rpx" solid #e7e7e7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 ~"30rpx";
+    font-size: ~"28rpx";
+    color: #001422;
+    .oper {
+      width: ~"152rpx";
+      height: ~"50rpx";
+      border: ~"1rpx" solid #F53252;
+      border-radius: ~"4rpx";
+      font-size: ~"24rpx";
+      color: #F53252;
+      text-align: center;
+      line-height: ~"50rpx";
+    }
+    .yellow {
+      color: #75AE36;
+    }
+
+    .red {
+      color: #EB606A;
+    }
+
+    .gray {
+      color: #CBCBCB;
+    }
+
+  }
+
+  .share {
+    height: ~"566rpx";
+    margin-bottom: ~"20rpx";
+    background: #FFFFFF;
+    text-align: center;
+    .share-img {
+      padding-top: ~"20rpx";
+      display: inline-block;
+      vertical-align: middle;
+      width: ~"710rpx";
+      height: ~"350rpx";
+    }
+    .share-item{
+      text-align: left;
+      padding: ~"30rpx" ~"30rpx" 0;
+      .share-title {
+        color: #222222;
+        font-size: ~"32rpx";
+        height: ~"32rpx";
+        line-height: ~"32rpx";
+      }
+      .share-location {
+        font-size: ~"24rpx";
+        color: #757575;
+        height: ~"30rpx";
+        line-height: ~"30rpx";
+        padding-top: ~"15rpx";
+      }
+      .share-price {
+        padding-top: ~"26rpx";
+        font-size: ~"32rpx";
+        color: #EB606A;
+        line-height: ~"28rpx";
+        .share-unit {
+          font-size: ~"24rpx"
+        }
+      }
+    }
+  }
+  .pp-navbar{
+    top: ~"60rpx";
+    border-top: none;
+  }
+  .record{
+    height: ~"60rpx";
+    padding: 0 ~"20rpx";
+    text-align: right;
+    line-height: ~"60rpx";
+  }
+</style>
+<template>
+  <view class="record" @tap="passTo">预约记录</view>
+  <ppTab :tabList.sync="tabList"></ppTab>
+  <repeat for="{{list}}" item="item" index="index">
+    <view class="share" @tap="toDetail('{{item}}')">
+      <image src="{{item.addInfo.images[0]}}" class="share-img"></image>
+      <view class="share-item">
+        <view class="share-title" wx:if="{{index===0}}">{{item.addInfo.intro}} {{item.addInfo.area}}㎡</view>
+        <view class="share-title" wx:else>{{item.addInfo.intro}} {{item.addInfo.area}}㎡</view>
+        <view class="share-location">位置：{{item.addInfo.location}}</view>
+        <view class="share-price">{{item.addInfo.rent}}
+          <text class="share-unit">元/天</text>
+        </view>
+      </view>
+    </view>
+  </repeat>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppTab from '../../../components/ppTab';
+  import api from '../../../api/homeApi';
+
+  import util from '../../../utils/util';
+
+  export default class Apply extends wepy.page {
+    config = {
+      navigationBarTitleText: '共享中心',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppTab: ppTab
+    };
+
+    data = {
+      tabList: [{
+        name: 'pxz',
+        title: '会议室'
+      }, {
+        name: 'ppz',
+        title: '电子屏'
+      }, {
+        name: 'pzz',
+        title: '展示厅'
+      }
+      ],
+      list: [],
+      index: 0
+    };
+
+    computed = {};
+
+    methods = {
+      //跳转到预定记录页面
+      passTo(){
+        this.$navigate('./record');
+      },
+      //跳转到详情
+      toDetail(item) {
+        this.$navigate('./myAppoint', { item: JSON.stringify(item) });
+      }
+
+    };
+
+    events = {
+      tebClick(index) {
+        this.index = index;
+        this.getList(this.tabList[index].title);
+      }
+    };
+
+    onLoad() {
+      wx.showLoading({ title: '正在加载中......' });
+      this.getList(this.tabList[0].title); //申请记录
+    }
+
+    getList(type) {
+      let _self = this;
+      api.shareList({ type: type }).then((res) => {
+        _self.list = res;
+        wx.hideLoading();
+        _self.$apply();
+      });
+    };
+  }
+</script>

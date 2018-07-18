@@ -1,0 +1,65 @@
+<style lang="less">
+  page {
+    background: #FFFFFF;
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+
+  .pp-setting {
+    width: 100%;
+    height: ~"110rpx";
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 ~"40rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    font-size:  ~"30rpx";
+    color: #222222;
+    .pp-setting-img {
+      width: ~"24rpx";
+      height: ~"24rpx";
+    }
+  }
+</style>
+<template>
+  <view class="pp-setting" @tap="opera('suggest')">
+    <view>意见反馈</view>
+    <view class="pp-setting-text">
+      <image src="../../../asserts/images/jinru.png" class="pp-setting-img" mode="aspectFill"></image>
+    </view>
+  </view>
+  <view class="pp-setting" @tap="opera('about')">
+    <view>关于我们</view>
+    <view class="pp-setting-text">
+      <image src="../../../asserts/images/jinru.png" class="pp-setting-img" mode="aspectFill"></image>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class My extends wepy.page {
+    config = {
+      navigationBarTitleText: '设置'
+    };
+    components = {};
+
+    data = {};
+
+    computed = {};
+
+    methods = {
+      opera(type) {
+        this.$navigate('./' + type);
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+
+    }
+
+  }
+</script>

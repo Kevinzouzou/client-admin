@@ -1,0 +1,369 @@
+<style lang="less">
+  .pp-appoint {
+    background: #FFFFFF;
+    padding: 0 ~"30rpx";
+    width: 100%;
+    .pp-appoint-title {
+      height: ~"181rpx";
+      font-size: ~"30rpx";
+      color: #222222;
+      line-height: ~"42rpx";
+      display: flex;
+      align-items: center;
+    }
+    .pp-items {
+      display: flex;
+      height: ~"110rpx";
+      text-align: center;
+      font-size: ~"24rpx";
+      color: #333333;
+      .pp-item {
+        border-left: ~"1rpx" solid #CBCBCB;
+        border-bottom: ~"1rpx" solid #CBCBCB;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        .pp-img {
+          margin-left: ~"25rpx";
+          width: ~"20rpx";
+          height: ~"20rpx";
+        }
+        .pp-flag {
+          position: absolute;
+          top: 0;
+          right: 0;
+          border-top: ~"35rpx" solid red;
+          border-left: ~"35rpx" solid transparent;
+        }
+      }
+      .pp-item:last-child {
+        border-right: ~"1rpx" solid #CBCBCB;
+      }
+      .pp-item-time {
+        width: ~"173rpx";
+        background: #F4F4F4;
+      }
+      .pp-data-time {
+        width: ~"173rpx";
+        background: #F4F4F4;
+      }
+      .pp-item-am {
+        width: ~"259rpx";
+        background: #F4F4F4;
+      }
+      .pp-item-pm {
+        width: ~"259rpx";
+        font-size: ~"24rpx";
+        color: #333333;
+      }
+    }
+    .pp-border .pp-item {
+      border-top: ~"1rpx" solid #CBCBCB;
+    }
+  }
+
+  .pp-msg {
+    background: #FFFFFF;
+    padding: ~"30rpx";
+    font-size: ~"20rpx";
+    color: #4A4A4A;
+    line-height: ~"28rpx";
+  }
+
+  .pp-footer {
+    height: ~"110rpx";
+    width: ~"750rpx";
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-top: ~"25rpx";
+    .pp-btn {
+      margin: 0 auto;
+      width: ~"690rpx";
+      height: ~"80rpx";
+      background: #C1A17B;
+      border-radius: ~"4rpx";
+      font-size: ~"32rpx";
+      line-height: ~"80rpx";
+      color: #FFFFFF;
+    }
+  }
+
+  .pp-record {
+    height: ~"60rpx";
+    padding: 0 ~"30rpx";
+    text-align: right;
+    font-size: ~"32rpx";
+    line-height: ~"60rpx";
+    background: #FFFFFF;
+    margin-bottom: ~"10rpx";
+  }
+
+  .pp-content {
+    height: ~"354rpx";
+    text-align: center;
+    .pp-title {
+      font-size: ~"32rpx";
+      color: #222222;
+      height: ~"46rpx";
+      line-height: ~"46rpx";
+      margin-top: ~"110rpx";
+    }
+    .pp-time {
+      margin-top: ~"16rpx";
+      font-size: ~"24rpx";
+      color: #4A4A4A;
+      height: ~"28rpx";
+      line-height: ~"28rpx";
+    }
+    .pp-detail {
+      padding: ~"50rpx";
+      width: ~"520rpx";
+      font-size: ~"24rpx";
+      color: #4A4A4A;
+      line-height: ~"36rpx"
+    }
+  }
+</style>
+<template>
+  <view class="pp-record" @tap="clickTo">预约记录</view>
+  <view class="pp-appoint">
+    <view class="pp-appoint-title">
+      松湖智谷联合政府机构、第三方中介机构，为园区企业提供免费上门服务。
+    </view>
+    <view class="pp-items pp-border">
+      <view class="pp-item pp-item-time">
+      </view>
+      <view class="pp-item pp-item-am">
+        上午
+      </view>
+      <view class="pp-item pp-item-am">
+        下午
+      </view>
+    </view>
+    <repeat for="{{infoList}}" item="item" index="index">
+      <view class="pp-items">
+        <view class="pp-item pp-data-time">
+          <view class="pp-data">
+            <view class="pp-date">
+              {{item.week}}
+            </view>
+            <view class="pp-week">
+              {{item.time}}
+            </view>
+          </view>
+        </view>
+        <view class="pp-item pp-item-pm" @tap="clickChange('{{item}}','am')">
+          {{item.amTitle}}
+          <image src="/asserts/images/icon_jinru.png" class="pp-img" wx:if="{{item.amTitle}}"></image>
+          <text class="pp-flag" hidden="{{!item.amState}}"></text>
+        </view>
+        <view class="pp-item pp-item-pm" @tap="clickChange('{{item}}','pm')">
+          {{item.pmTitle}}
+          <image src="/asserts/images/icon_jinru.png" class="pp-img" wx:if="{{item.pmTitle}}"></image>
+          <text class="pp-flag" hidden="{{!item.pmState}}"></text>
+        </view>
+      </view>
+    </repeat>
+  </view>
+  <view class="pp-msg">
+    注意事项：一旦提交预约则不可取消，若需取消请联系相关工作人员0755-12345678
+  </view>
+  <!--<view class="pp-footer">-->
+  <!--<view class="pp-btn" @tap="toSubmit()">-->
+  <!--下一步-->
+  <!--</view>-->
+  <!--</view>-->
+
+  <!--弹出框-->
+  <pp_Dialog wx:if="{{!showDialog}}" @hideDialog.user="hideDialog" @clickDialog.user="clickDialog">
+    <view slot="content" class="pp-content">
+      <view class="pp-title">{{info.title}}</view>
+      <view class="pp-time">{{info.serveDate}} {{info.period}}</view>
+    </view>
+  </pp_Dialog>
+
+  <ppDialog wx:if="{{!showDetail}}" :title.sync="title" :appointed.sync="appointed" :btnText.sync="btnText"
+            @hideDialog.user="hideDetail" @clickDialog.user="clickDetail">
+    <view slot="content" class="pp-content">
+      <view class="pp-detail">{{info.content}}</view>
+    </view>
+  </ppDialog>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import ppDialog from '../../../components/ppDialog';
+  import pp_Dialog from '../../../components/ppDialog';
+  import util from '../../../utils/util';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '上门预约',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppDialog: ppDialog,
+      pp_Dialog: pp_Dialog
+    };
+
+    data = {
+      infoList: [],
+      showDialog: true,
+      title: '课程详情',
+      showDetail: true,
+      appointed: false,
+      btnText: '预约',
+      info: {}
+    };
+
+    computed = {};
+
+    methods = {
+      clickChange(item, type) {
+        if (!item.period) return;
+        this.info = item;
+        if (type === 'am') {
+          this.info.content = item.amContent;
+          this.info.title = item.amTitle;
+          this.info.period = '上午';
+          this.info.type = 'am';
+          if (item.amState) {
+            this.appointed = true;
+            this.btnText = '已预约';
+          } else {
+            this.appointed = false;
+            this.btnText = '预约';
+          }
+        } else {
+          this.info.content = item.pmContent;
+          this.info.title = item.pmTitle;
+          this.info.period = '下午';
+          this.info.type = 'pm';
+          if (item.pmState) {
+            this.appointed = true;
+            this.btnText = '已预约';
+          } else {
+            this.appointed = false;
+            this.btnText = '预约';
+          }
+        }
+        this.showDetail = false;
+        this.$apply();
+      },
+      //跳转到预约记录页面
+      clickTo() {
+        this.$navigate('./index');
+      },
+      hideDialog() {
+        this.showDialog = true;
+      },
+      clickDialog() {
+        this.showDialog = true;
+        let staff = wx.getStorageSync('staff');
+        let postData = {};
+        if (this.info.type === 'am') {
+          postData.targetId = this.info.aid;
+        } else {
+          postData.targetId = this.info.pid;
+        }
+        postData.type = 'USER_ORDER_COMMERCE_COURSE';
+        let info = {};
+        info.name = staff.name;
+        info.phone = staff.phone;
+        info.enterprise = staff.addInfo.enterpriseName;
+        info.remark = '';
+        postData.addInfo = info;
+        api.addRelationship(postData).then(res => {
+          this.$navigate('./index');
+        });
+      },
+      hideDetail() {
+        this.showDetail = true;
+      },
+      clickDetail() {
+        let info = this.info;
+        if (info.amState && info.type === 'am' || info.pmState && info.type === 'pm') return;
+        this.showDetail = true;
+        this.showDialog = false;
+      }
+    };
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+    onShow() {
+      this.getInfo();
+    }
+
+    getInfo() {
+      let _self = this;
+      //商务课程列表
+      let startDate = util.recentlyDayToTime(0);
+      let endDate = util.recentlyDayToTime(6);
+      //我的商务课程
+      api.myBusinessCource({}).then(temp => {
+        let tempList = temp;
+        api.businessCourceList({ startDate: startDate, endDate: endDate }).then(res => {
+          let list = res;
+          list.forEach(item => {
+            tempList.forEach(childItem => {
+              if (childItem.addInfo.target.serveDate === item.serveDate && childItem.addInfo.target.period === item.period) {
+                item.state = true;
+              }
+            });
+          });
+          _self.getOrderList(list);
+        });
+
+      });
+
+    }
+
+    //组装信息
+    getOrderList(appoint) {
+      let array = appoint;
+      let list = [{}, {}, {}, {}, {}, {}, {}];
+      list.forEach((item, index) => {
+        item.time = util.recentlyDayToTime(index);
+        item.week = util.recentlyDayToWeek(index);
+        item.amTitle = '';
+        item.pmTitle = '';
+        item.amContent = '';
+        item.pmContent = '';
+        item.amState = false;
+        item.pmState = false;
+        //与后台给的日期比较 数据转换
+        array.forEach((childItem) => {
+          if (childItem.serveDate === item.time) {
+            if (childItem.period === '上午') {
+              item.amTitle = childItem.addInfo.title;
+              item.amContent = childItem.addInfo.content;
+              item.amState = childItem.state;
+              item.aid = childItem.id;
+            } else {
+              item.pmTitle = childItem.addInfo.title;
+              item.pmContent = childItem.addInfo.content;
+              item.pmState = childItem.state;
+              item.pid = childItem.id;
+            }
+            item.createTime = childItem.createTime;
+            item.period = childItem.period;
+            item.serveDate = childItem.serveDate;
+          }
+        });
+        let tmplist = item.time.split('-');
+        item.time = tmplist[1] + '-' + tmplist[2];
+      });
+      this.infoList = list;
+      console.log(list);
+      this.$apply();
+    };
+  }
+</script>

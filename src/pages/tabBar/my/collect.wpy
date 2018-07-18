@@ -1,0 +1,236 @@
+<style lang="less">
+  .apply {
+    .section-item {
+      width: 100%;
+      background: #ffffff;
+      margin-top: ~"20rpx";
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: ~"124rpx";
+        padding: 0 ~"30rpx";
+
+        .left {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .title {
+          font-size: ~"30rpx";
+          color: #333333;
+          letter-spacing: 0;
+        }
+        .time {
+          padding-top: ~"10rpx";
+          font-size: ~"24rpx";
+          color: #222222;
+          letter-spacing: 0;
+          line-height: 1;
+        }
+        .status {
+          line-height: ~"40rpx";
+          height: ~"40rpx";
+          font-size: ~"30rpx";
+        }
+
+        .waiting {
+          color: #EB606A;
+        }
+        .assess {
+          color: #75AE36;
+        }
+        .success {
+          color: #CBCBCB;
+        }
+
+      }
+
+      .container {
+        padding: 0 ~"30rpx";
+        flex-direction: column;
+        display: flex;
+        border-top: ~"1rpx" solid #e7e7e7;
+        border-bottom: ~"1rpx" solid #e7e7e7;
+
+        .section-normal {
+          font-size: ~"28rpx";
+          color: #222222;
+          display: flex;
+        }
+
+        .line {
+          border-bottom: ~"1rpx" solid #e7e7e7;
+        }
+
+        .address {
+          padding-top: ~"30rpx";
+          padding-bottom: ~"10rpx";
+        }
+
+        .img {
+          padding: ~"30rpx" 0;
+          max-width: ~"538rpx";
+          display: flex;
+          flex-flow: row wrap;
+
+          .right {
+            margin-right: ~"10rpx";
+          }
+          image {
+            flex: 0 0 ~"160rpx";
+            height: ~"160rpx";
+            margin-bottom: ~"10rpx";
+          }
+
+        }
+
+        .feedback {
+          padding-top: ~"40rpx";
+          padding-bottom: ~"53rpx";
+        }
+        .feedback-info {
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 ~"200rpx";
+
+          .time {
+            font-size: ~"24rpx";
+            padding-top: ~"10rpx";
+            color: #9B9B9B;
+          }
+        }
+        .title {
+          flex: 0 0 ~"152rpx";
+        }
+
+        .normal {
+          flex: 1 1 ~"200rpx";
+        }
+      }
+
+      .footer {
+        display: flex;
+        flex-direction: column;
+        padding: 0 ~"30rpx" ~"30rpx";
+        .section-normal {
+          font-size: ~"28rpx";
+          color: #222222;
+          display: flex;
+        }
+
+        .rating {
+          padding-top: ~"32rpx";
+          .stars {
+            width: ~"200rpx";
+          }
+        }
+        .assess {
+          padding-top: ~"22rpx";
+        }
+        .attention {
+          font-size: ~"20rpx";
+          color: #4A4A4A;
+          letter-spacing: 0;
+          padding-top: ~"40rpx";
+          padding-bottom: ~"10rpx";
+        }
+
+        .title {
+          flex: 0 0 ~"152rpx";
+        }
+        .normal {
+          flex: 1 1 ~"200rpx";
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <ppTab :tabList.sync="tabList">
+    <view slot="pxz">
+      <ppHigh :highList.sync="highList" @toDetail.user="toDetail">高端服务</ppHigh>
+    </view>
+    <view slot="ppz">
+      <ppFinance :serList.sync="highList" @toDetail.user="toDetail"></ppFinance>
+    </view>
+    <view slot="pzz">
+      <ppBusiness :serList.sync="highList" @toDetail.user="toDetail"></ppBusiness>
+    </view>
+  </ppTab>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppTab from '../../../components/ppTab';
+  import ppFinance from '../../../components/ppSer';
+  import ppBusiness from '../../../components/ppSer';
+  import ppHigh from '../../../components/ppHigh';
+  import util from '../../../utils/util';
+  import api from '../../../api/homeApi';
+
+  export default class Apply extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的收藏'
+    };
+    components = {
+      ppTab: ppTab,
+      ppFinance: ppFinance,
+      ppHigh: ppHigh,
+      ppBusiness: ppBusiness
+    };
+
+    data = {
+      tabList: [{
+        id: 0,
+        name: 'pxz',
+        title: '高端活动',
+        type:'USER_MARK_ADVANCED_ACTIVITY'
+      }, {
+        id: 1,
+        name: 'ppz',
+        title: '金融服务',
+        type:'USER_MARK_FINANCE'
+      }, {
+        id: 2,
+        name: 'pzz',
+        title: '商务服务',
+        type:'USER_MARK_COMMERCE'
+      }
+      ],
+      highList: []
+    };
+
+    computed = {};
+
+    methods = {
+      //点击查看详情
+      toDetail(type) {
+        this.$navigate('../../component/template',{url: type});
+      }
+    };
+
+    events = {
+      //切换
+      tebClick(value){
+        this.getList(this.tabList[value].type);
+      }
+    };
+
+
+    onLoad() {
+      this.getList(this.tabList[0].type);
+    };
+
+    getList(type) {
+      let self = this;
+      api.getCollectAndSignList({type : type}).then((res) => {
+        self.highList = res;
+        self.$apply();
+      });
+    }
+
+  }
+</script>

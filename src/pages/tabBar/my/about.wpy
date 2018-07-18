@@ -1,0 +1,69 @@
+<style lang="less">
+  .about {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    text-align: center;
+    border-top:  ~"1rpx" solid #e7e7e7;
+    .pp-about-footer {
+      width: 100%;
+      position: fixed;
+      bottom: ~"35rpx";
+      font-size:  ~"24rpx";
+      color: #CBCBCB;
+    }
+    .pp-about-img{
+      margin-top:  ~"135rpx";
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .pp-about-icon{
+        width:  ~"216rpx";
+        height:  ~"216rpx";
+      }
+    }
+    .pp-vision{
+      font-size: ~"28rpx";
+      color: #000000;
+    }
+  }
+
+
+</style>
+<template>
+  <view class="about">
+    <view class="pp-about-img">
+      <image src="../../../asserts/images/logo.png" class="pp-about-icon"></image>
+    </view>
+    <view class="pp-vision">V1.0</view>
+    <view class="pp-about-footer">
+      Copyright© 2018 松湖智谷 , All Right Reserved
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class About extends wepy.page {
+    config = {
+      navigationBarTitleText: '关于我们'
+    };
+    components = {};
+
+    data = {};
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+
+    onLoad() {
+
+    }
+
+  }
+</script>

@@ -1,0 +1,91 @@
+<style lang="less">
+  .record {
+    background: #FFFFFF;
+    height: ~"348rpx";
+    margin-top: ~"20rpx";
+    padding: 0 ~"30rpx";
+    .record-top {
+      height: ~"80rpx";
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size:~"28rpx";
+      color: #333333;
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      .record-state{
+        color: #75AE36;
+        font-size: ~"30rpx";
+      }
+    }
+    .record-info{
+      padding: ~"25rpx" 0;
+      .record-item{
+        height: ~"48rpx";
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+</style>
+<template>
+  <repeat for="{{list}}" item="item" index="index">
+    <view class="record">
+      <view class="record-top">
+        <text>{{item.addInfo.intro}}</text>
+        <text class="record-state">已预约</text>
+      </view>
+      <view class="record-info">
+        <view class="record-item">
+          <text>预约时间</text>
+          <text>04-13 上午 至 04-14 下午</text>
+        </view>
+        <view class="record-item">
+          <text>地点</text>
+          <text>{{item.addInfo.location}}</text>
+        </view>
+        <view class="record-item">
+          <text>服务地点</text>
+          <text>{{item.addInfo.location}}</text>
+        </view>
+        <view class="record-item">
+          <text>付款</text>
+          <text>￥1500.00</text>
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Apply extends wepy.page {
+    config = {
+      navigationBarTitleText: '预约记录',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      list: []
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad() {
+      api.sharedRecord().then(res=>{
+        console.log(res);
+      })
+    }
+
+
+  }
+</script>

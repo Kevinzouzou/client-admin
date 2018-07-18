@@ -1,0 +1,193 @@
+<style lang="less">
+  @import "../../../asserts/style/commit";
+  @import "../../../asserts/style/form";
+  page{
+    background: #172029;
+  }
+  .pp-com-size {
+    /*height: 100%;*/
+  }
+  .pp-commit .pp-com-form{
+    top:  ~"416rpx";
+  }
+  textarea {
+    height: ~"236rpx";
+  }
+
+  .pp-repair-call {
+    width:  ~"630rpx";
+    height: ~"160rpx";
+    margin: 0 ~"40rpx";
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom:  ~"1rpx" solid #e7e7e7;
+    .pp-repair-item{
+      font-size:  ~"24rpx";
+      color: #222222;
+      .pp-repair-phone{
+        margin-top:  ~"10rpx";
+        font-size:  ~"32rpx";
+        color: #C1A17B;
+      }
+    }
+    .pp-repair-icon {
+      width:  ~"56rpx";
+      height:  ~"56rpx";
+    }
+  }
+</style>
+<template>
+  <view class="pp-commit">
+    <view class="pp-commit-img">
+      <image src="http://lmstore.oss-cn-shenzhen.aliyuncs.com/suggesstions/1527228946487.jpg" class="pp-commit-img"></image>
+      <view class="pp-commit-into" @tap="showMore">申请记录</view>
+      <image src="../../../asserts/images/pic_mask_r.png" class="pp-mark-img"></image>
+      <view class="pp-com-form pp-com-size">
+        <view class="pp-enter-title">
+          投诉建议
+        </view>
+        <view class="pp-repair-call">
+          <view class="pp-repair-item">
+            <view class="pp-repair-dep">
+              物业-维修部
+            </view>
+            <view class="pp-repair-phone">
+              {{callPhone}}
+            </view>
+          </view>
+          <view class="pp-repair-icon" @tap="call">
+            <_img :src.sync="iconImg" class="pp-repair-icon"></_img>
+          </view>
+        </view>
+        <view class="pp-cell pp-cell-area" style="border-bottom: none">
+          <view class="pp-label-area">
+            <view class="pp-area-text ">问题描述</view>
+          </view>
+          <view class="pp-area">
+            <textarea bindinput="textAreaChange" placeholder="请简要输入遇到的问题…" placeholder-class="textarea"
+                      maxlength="140" bindinput="inputChange" id="question" value="{{question}}"/>
+          </view>
+        </view>
+        <view class="pp-cell" style="border-bottom: none">
+          <view class="pp-select">
+            <view class="pp-select-upload">
+              <repeat for="{{imglist}}" item="item" index="index">
+                <view class="pp-img-item">
+                  <image src="{{item}}" class="pp-select-img"></image>
+                </view>
+              </repeat>
+              <view class="pp-img-item">
+                <image src="../../../asserts/images/icon_tianjiatupian.png" class="pp-select-img" @tap="addImg"></image>
+                <text class="pp-item-size">{{imgSize}}/6</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class='pp-btn pp-mb20' style="margin-top:  30rpx">
+          <veiw @tap="dealTask()" class="pp-btn-text {{isClick?'pp-color':''}}">处理</veiw>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import _img from '../../../components/ppImage';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '投诉建议',
+    };
+    components = {
+      _img: _img
+    };
+
+    data = {
+      callPhone:'0769-89080988-8029',
+      iconImg: '../../../asserts/images/icon_bodadianhua.png',
+      imglist:[],
+      imgSize: 0,
+      question:'',
+      isClick:false
+    };
+
+    computed = {};
+
+    methods = {
+      showMore() {
+        this.$navigate('./detail');
+      },
+      //输入框变化
+      inputChange(e) {
+        this.question = e.detail.value;
+        this.isClick = this.question===""?false:true;
+      },
+      //提交记录
+      dealTask() {
+        if (!this.isClick) return;
+        let addInfo = {};
+        addInfo.remark = this.question;
+        addInfo.imageUrls = this.imglist;
+        let staff = wx.getStorageSync('staff');
+        addInfo.phone = staff.phone;
+        addInfo.contact = staff.name;
+        addInfo.companyName = staff.addInfo.enterpriseName;
+        addInfo.next = 1;
+        let postData = {};
+        postData.userId = wx.getStorageSync('userId');
+        postData.stage = "未完结";
+        postData.type = '投诉建议';
+        postData.addInfo = addInfo;
+        api.addSerInfo(postData).then((res) => {
+          this.imgSize = 0;
+          this.question = '';
+          this.imglist = [];
+          this.isClick = false;
+          this.$apply();
+          util.toast("提交成功！");
+        }).catch(err=>{
+          util.toast("服务器开小差了！")
+        });
+      },
+      bindStartDateChange(e) {
+        this.startDate = e.detail.value;
+      },
+      addImg() {
+        let self = this;
+        if(self.imglist.length >= 6) return;
+        //上传图片
+        wx.chooseImage({
+          success: function(res) {
+            let tempFilePaths = res.tempFilePaths;
+            api.uploaImg({ file: tempFilePaths[0] }).then((res) => {
+              let img = JSON.parse(res.data);
+              self.imglist.push(img.responseList.url);
+              self.imgSize = self.imglist.length;
+              self.$apply();
+            }).catch((err) => {
+            });
+          }
+        });
+      },
+      //打电话
+      call(){
+        wx.makePhoneCall({
+          phoneNumber: this.callPhone
+        })
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+
+    }
+
+  }
+</script>

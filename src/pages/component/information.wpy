@@ -1,0 +1,72 @@
+<style lang="less">
+  @import "../../asserts/style/article";
+</style>
+<template>
+  <view class="pp-ser-img">
+    <ppSer :serList.sync="serList" @toDetail.user="toDetail"></ppSer>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../api/homeApi';
+  import ppSer from '../../components/ppSer';
+
+  export default class Business extends wepy.page {
+    config = {
+      navigationBarTitleText: '信息化建设',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppSer: ppSer
+    };
+
+    data = {
+      serList: []
+    };
+
+    computed = {};
+
+    methods = {
+      //点击查看详情
+      toDetail(type, id) {
+        this.$navigate('./template', { url: type, id: id });
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.getList();
+    };
+
+    getList() {
+      let _self = this;
+      wx.showLoading({ title: '正在加载中...' });
+      api.queryInfo({ type: '信息化建设' }).then((res) => {
+        wx.hideLoading();
+        _self.serList = res;
+        _self.$apply();
+      });
+    }
+
+    /**
+     * 监听用户下拉动作
+     */
+    onPullDownRefresh() {
+      setTimeout((arg) => {
+        wx.stopPullDownRefresh();
+      }, 300);
+    };
+
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage() {
+
+    }
+  }
+</script>

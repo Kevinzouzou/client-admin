@@ -1,0 +1,86 @@
+<style lang="less">
+  @import "../../asserts/style/article";
+  .footer{
+    width: ~"750rpx";
+    height: ~"98rpx";
+    background: #C1A17B;
+    position: fixed;
+    bottom: 0;
+    font-size:~"32rpx";
+    color: #FFFFFF;
+    text-align: center;
+    line-height: ~"98rpx";
+  }
+</style>
+<template>
+  <ppSer :serList.sync="serList" @toDetail.user="toDetail"></ppSer>
+  <view class="footer" @tap="clickTo">上门预约</view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppSer from '../../components/ppSer';
+  import api from '../../api/homeApi';
+
+  export default class Business extends wepy.page {
+    config = {
+      navigationBarTitleText: '商务服务',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppSer: ppSer
+    };
+
+    data = {
+      serList: []
+    };
+
+    computed = {};
+
+    methods = {
+      //查看详情
+      toDetail(type, id) {
+        this.$navigate('/pages/component/template', { id: id, url: type });
+      },
+      //跳转到预约记录
+      clickTo(){
+        this.$navigate('./business/appoint');
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.getList();
+    };
+
+    getList() {
+      let _self = this;
+      wx.showLoading({ title: '正在加载中...' });
+      api.queryInfo({ type: '商务服务' }).then((res) => {
+        wx.hideLoading();
+        _self.serList = res;
+        console.log(_self.serList[0].thumbUrl);
+        _self.$apply();
+      });
+    }
+
+    /**
+     * 监听用户下拉动作
+     */
+    onPullDownRefresh() {
+      setTimeout((arg) => {
+        wx.stopPullDownRefresh();
+      }, 300);
+    };
+
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage() {
+
+    }
+  }
+</script>

@@ -1,0 +1,229 @@
+<style lang="less">
+  .pp-pay {
+    width: 100%;
+    background: #FFFFFF;
+    .pp-pay-item {
+      height: ~"260rpx";
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      .pp-pay-title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .pp-pay-line {
+          width: ~"30rpx";
+          height: ~"4rpx";
+          background: #C1A17B;
+        }
+        .pp-pay-txt {
+          padding: 0 ~"10rpx";
+          font-size: ~"28rpx";
+          color: #222222;
+        }
+      }
+      .pp-pay-price {
+        font-size: ~"64rpx";
+        color: #EB606A;
+      }
+    }
+    .pp-pay-info {
+      height: ~"266rpx";
+      padding: ~"2rpx" ~"40rpx" 0;
+      .pp-info-item {
+        display: flex;
+        justify-content: space-between;
+        margin-top: ~"30rpx";
+        font-size: ~"28rpx";
+        line-height: ~"28rpx";
+        height: ~"28rpx";
+        .pp-info-title {
+          color: #333333;
+        }
+        .pp-info-value {
+          color: #222222;
+        }
+
+      }
+    }
+  }
+
+  .pp-pay-type {
+    width: 100%;
+    margin-top: ~"20rpx";
+    height: ~"180rpx";
+    background: #FFFFFF;
+    .pp-type-title {
+      height: ~"80rpx";
+      line-height: ~"80rpx";
+      font-size: ~"28rpx";
+      color: #333333;
+      padding-left: ~"40rpx";
+      border-bottom: ~"1rpx" solid #e7e7e7;
+    }
+    .pp-type-check {
+      display: flex;
+      height: ~"100rpx";
+      justify-content: space-between;
+      padding: 0 ~"40rpx";
+      align-items: center;
+      .pp-type-icon {
+        font-size: ~"28rpx";
+        color: #333333;
+        .pp-type-img {
+          vertical-align: middle;
+          width: ~"40rpx";
+          height: ~"40rpx";
+          margin-right: ~"30rpx";
+        }
+      }
+      .pp-check-img{
+        width: ~"40rpx";
+        height: ~"40rpx";
+      }
+    }
+  }
+
+  .pp-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom:  ~"30rpx";
+    left:  ~"30rpx";
+    .pp-btn-text{
+      width:  ~"690rpx";
+      height:  ~"80rpx";
+      border-radius:  ~"4rpx";
+      text-align: center;
+      font-size:  ~"32rpx";
+      line-height:  ~"80rpx";
+      color: #FFFFFF;
+    }
+  }
+  .gray{
+    background: #cccccc;
+  }
+  .blue{
+    background: #62b900;
+  }
+</style>
+<template>
+  <view class="pp-pay">
+    <view class="pp-pay-item">
+      <view class="pp">
+        <view class="pp-pay-title">
+          <text class="pp-pay-line"></text>
+          <text class="pp-pay-txt">应付金额</text>
+          <text class="pp-pay-line"></text>
+        </view>
+        <view class="pp-pay-price">
+          ¥ 15.00
+        </view>
+      </view>
+    </view>
+    <view class="pp-pay-info">
+      <view class="pp-info-item">
+        <view class="pp-info-title">
+          应缴金额
+        </view>
+        <view class="pp-info-value">
+          ￥150.00
+        </view>
+      </view>
+      <view class="pp-info-item">
+        <view class="pp-info-title">
+          折扣金额
+        </view>
+        <view class="pp-info-value">
+          ￥15.00
+        </view>
+      </view>
+      <view class="pp-info-item">
+        <view class="pp-info-title">
+          停车时长
+        </view>
+        <view class="pp-info-value">
+          59分01秒
+        </view>
+      </view>
+      <view class="pp-info-item">
+        <view class="pp-info-title">
+          入场时间
+        </view>
+        <view class="pp-info-value">
+          2018-05-29 19:14:20
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="pp-pay-type">
+    <view class="pp-type-title">选择支付方式</view>
+    <view class="pp-type-check" @tap="changeSelect">
+      <view class="pp-type-icon">
+        <image src="../../../asserts/images/icon_fenxiang_weixin.png" class="pp-type-img"></image>
+        <text>微信支付</text>
+      </view>
+      <view class="pp-check-icon" >
+        <image src=" {{select?'../../../asserts/images/icon_weixuanzhong.png':'../../../asserts/images/icon_xuanzhong.png'}}" class="pp-check-img" ></image>
+      </view>
+    </view>
+  </view>
+  <view class="pp-btn pp-mb20 {{select?'gray':'blue'}}">
+    <view @tap="toPay()" class="pp-btn-text" disabled="{{select}}">立即支付</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+
+  export default class Pay extends wepy.page {
+    config = {
+      navigationBarTitleText: '支付',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      select:true,
+      carType:'' //车牌号
+    };
+
+    computed = {};
+
+    methods = {
+      changeSelect(){
+        this.select = !this.select;
+      },
+      //点击支付
+      toPay(){
+        if(this.select) return;
+        let addInfo = {};
+        addInfo.time = '59分01秒';
+        addInfo.discount = '15';
+        addInfo.carType = this.carType;
+        let postData = {};
+        postData.parkId = wx.getStorageSync('parkId');
+        postData.type = "微信支付";
+        postData.serviceId = 'e93f4a299272440198e4612fbb8a0485';
+        postData.serviceType = '停车服务';
+        postData.amount = 152;
+        postData.addInfo = addInfo;
+        api.addSevPay(postData).then((res)=>{
+        });
+        this.$navigate('./index');
+      }
+    };
+
+    events = {};
+
+
+    onLoad(option) {
+        this.carType = option.carType;
+    }
+
+  }
+</script>

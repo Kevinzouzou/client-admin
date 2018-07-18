@@ -1,0 +1,371 @@
+<style lang="less">
+  .pp-navbar {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    position: absolute;
+    z-index: 500;
+    top: 0;
+    border-bottom: ~"1rpx" solid #F4F4F4;
+    left: ~"160rpx";
+    height: ~"88rpx";
+  }
+
+  .pp-navbar__item {
+    position: relative;
+    display: block;
+    padding: 13px 0;
+    text-align: center;
+    font-size: 0;
+    width: ~"200rpx";
+  }
+
+  .pp-navbar__item.pp-bar__item_on {
+    color: #1aad19;
+  }
+
+  .pp-navbar__slider {
+    position: absolute;
+    content: " ";
+    left: 0;
+    bottom: 0;
+    width: 6em;
+    height: ~"6rpx";
+    background-color: #1aad19;
+    -webkit-transition: -webkit-transform 0.3s;
+    transition: -webkit-transform 0.3s;
+    transition: transform .3s;
+  }
+
+  .pp-navbar__title {
+    display: inline-block;
+    font-size: ~"28rpx";
+    max-width: 8em;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+  }
+
+  .pp-navbar {
+    position: fixed;
+    background-color: #ffffff;
+    border-bottom: none;
+    border-top: ~"1rpx" solid #f4f4f4;
+    border-bottom: ~"1rpx" solid #f4f4f4;
+  }
+
+  .pp-tab__panel {
+    margin-top: ~"88rpx";
+    width: 100%;
+  }
+
+  .pp-navbar__item.pp-bar__item_on {
+    color: #D3AB7D;
+  }
+
+  .pp-navbar__slider {
+    background-color: #D3AB7D;
+    width: ~"120rpx";
+    left: ~"38rpx";
+    transition: transform .35s
+  }
+
+  .pp-tab-item {
+    width: ~"750rpx";
+    background: #ffffff;
+    height: ~"88rpx";
+    border-top: ~"1rpx" solid #f4f4f4;
+    border-bottom: ~"1rpx" solid #f4f4f4;
+    position: fixed;
+    z-index: 500;
+    top: 0;
+  }
+
+  .pp-tab-select {
+    position: fixed;
+    top: ~"25rpx";
+    right: ~"40rpx";
+    .pp-select-img {
+      width: ~"40rpx";
+      height: ~"40rpx";
+    }
+  }
+
+  .pp-select {
+    position: fixed;
+    top: ~"86rpx";
+    right: 0;
+    background: #ffffff;
+    color: #9B9B9B;
+    font-size: ~"30rpx";
+    border: ~"1rpx" solid #f4f4f4;
+    .pp-select-item {
+      height: ~"66rpx";
+      line-height: ~"66rpx";
+      border-bottom: ~"1rpx" solid #f4f4f4;
+      margin: 0 ~"20rpx";
+      text-align: center;
+    }
+  }
+
+  page {
+    background: #ffffff;
+  }
+
+  .pp-select-red {
+    color: #EB606A;
+  }
+
+  .pp-notice-item {
+    width: ~"690rpx";
+    height: ~"260rpx";
+    margin: 0 ~"30rpx";
+    border-bottom: ~"1rpx" solid #f4f4f4;
+    display: flex;
+    align-items: center;
+    .pp-notice-img {
+      width: ~"248rpx";
+      height: ~"182rpx";
+    }
+    .pp-notice-desc {
+      margin-top: ~"20rpx";
+      padding-left: ~"36rpx";
+      position: relative;
+      .pp-notice-type {
+        width: ~"370rpx";
+        line-height: ~"30rpx";
+        font-size: ~"30rpx";
+        color: #222222;
+      }
+      .pp-notice-time {
+        width: ~"370rpx";
+        display: flex;
+        align-items: center;
+        font-size: ~"22rpx";
+        color: #9F9F9F;
+        justify-content: space-between;
+        padding-top: ~"60rpx";
+        .pp-date {
+          margin-right: ~"30rpx";
+        }
+        .pp-txt{
+          display: flex;
+          text-align: center;
+          .pp-data-img {
+            width: ~"26rpx";
+            height: ~"18rpx";
+          }
+        }
+      }
+    }
+  }
+
+  .pp-inform {
+    margin-left: ~"30rpx";
+    .pp-inform-content {
+      width: ~"420rpx";
+      font-size: ~"28rpx";
+      color: #060606;
+      height: ~"40rpx";
+      line-height: ~"40rpx";
+    }
+
+    .pp-info-desc {
+      font-size: ~"24rpx";
+      color: #5F5F5F;
+      height: ~"33rpx";
+      line-height: ~"33rpx";
+    }
+    .pp-info-price {
+      font-size: ~"36rpx";
+      color: #BC2727;
+      height: ~"49rpx";
+      line-height: ~"49rpx";
+    }
+    .pp-info-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: ~"21rpx";
+      font-size: ~"22rpx";
+      color: #9F9F9F;
+      height: ~"30rpx";
+      line-height: ~"30rpx";
+      .pp-footer-info{
+        font-size: ~"24rpx";
+        color: #9B9B9B;
+      }
+      .pp-footer-type {
+        font-size: ~"30rpx";
+        color: #EB606A;
+      }
+    }
+  }
+
+  .pp-nav-slide {
+    width: ~"40rpx";
+    height: ~"6rpx";
+    background: #C1A17B;
+    position: absolute;
+    bottom: 0;
+    left: ~"82rpx"
+
+  }
+</style>
+<template>
+  <view class="pp-tab" @tap="clickFalse">
+    <view class="pp-tab-item">
+      <view class="pp-navbar">
+        <repeat for="{{tabList}}" index="index" item="item">
+          <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+                @tap="tabClick('{{index}}')">
+            <view class="pp-navbar__title">{{item}}</view>
+            <view class="pp-nav-slide" wx:if="{{activeIndex === index}}"></view>
+          </view>
+        </repeat>
+      </view>
+      <view class="pp-tab-select" catchtap="selectAll">
+        <_img :src.sync="selectImg" class="pp-select-img"></_img>
+      </view>
+      <view class="pp-select" hidden="{{showSelect}}">
+        <repeat for="{{selectlist}}" item="item" index="index">
+          <view class="pp-select-item {{item.select?'pp-select-red':''}}" @tap="changeStatue('{{item}}','{{index}}')">
+            {{item.name}}
+          </view>
+        </repeat>
+
+      </view>
+    </view>
+    <view class="pp-tab__panel">
+      <view class="pp-tab__content" hidden="{{activeIndex != 0}}">
+        <repeat for="{{noticeList}}" index="index" item="item">
+          <view class="pp-notice-item" @tap="passToDetail('{{item.detailUrl}}')">
+            <view class="pp-notice-img">
+              <image src="{{item.thumbUrl}}" class="pp-notice-img" mode="aspectFill"></image>
+            </view>
+            <view class="pp-notice-desc">
+              <view class="pp-notice-type">
+                {{item.title}}
+              </view>
+              <view class="pp-notice-time">
+                <view class="pp-txt">
+                  <view class="pp-data-img">
+                    <image src="/asserts/images/icon_guankan.png" class="pp-data-img"
+                           mode="aspectFill"></image>
+                  </view>
+                  <view class="pp-date-size">
+                    1234
+                  </view>
+                </view>
+                <view class="pp-date">
+                  2017-11-23
+                </view>
+              </view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+      <view class="pp-tab__content" hidden="{{activeIndex != 1}}">
+        <repeat for="{{noticeList}}" index="index" item="item">
+          <view class="pp-notice-item">
+            <view class="pp-notice-img">
+              <image src="{{item.thumbUrl}}" class="pp-notice-img" mode="aspectFill"></image>
+            </view>
+            <view class="pp-inform">
+              <view class="pp-inform-content space">
+                电影名黄金时代黄金时代黄金时代电影名黄金时代黄金时代黄金时代
+              </view>
+              <view class="pp-info-desc">
+                屏幕信息3DMAX屏幕3DMAX屏幕
+              </view>
+              <view class="pp-info-footer">
+                <view class="pp-footer-info">
+                  学府花园
+                </view>
+                <view class="pp-footer-type">
+                  ¥2000/月
+                </view>
+              </view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import _img from '../../components/ppImage';
+  import api from '../../api/homeApi';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '园区信息'
+    };
+    components = {
+      _img: _img
+    };
+    data = {
+      selectImg: '../../asserts/images/more.png',
+      tabList: ['公告', '惠通知'],
+      selectlist: [],
+      noticeList: [],
+      activeIndex: 0,
+      sliderOffset: 100,
+      sliderLeft: 0,
+      showSelect: true
+    };
+
+    computed = {};
+
+    methods = {
+      //跳转到详情
+      passToDetail(detail){
+        this.$navigate('../template',{url: detail});
+      },
+      //隐藏下拉
+      clickFalse() {
+        this.showSelect = true;
+      },
+      tabClick(index) {
+        this.activeIndex = index;
+        this.getType(this.tabList[index], true);
+      },
+      //点击显示下拉选项
+      selectAll() {
+        this.showSelect = !this.showSelect;
+      },
+      //点击切换数据
+      changeStatue(item) {
+        this.getSelectList(this.tabList[this.activeIndex], item.name);
+      }
+    };
+    events = {};
+
+    onLoad() {
+      this.getType('公告', true);
+      this.sliderOffset = this.activeIndex * 100;
+    }
+    //获取子类型
+    getType(subType, state) {
+      let _self = this;
+      api.getType({ pname: subType }).then(res => {
+        if(state){
+          _self.getSelectList(subType, res[0].name);
+        }
+        _self.selectlist = res;
+        _self.$apply();
+      });
+    }
+    //获取列表信息
+    getSelectList(type, subType) {
+      let _self = this;
+      api.queryInfo({ type: type, subType: subType }).then(res => {
+        _self.noticeList = res;
+        _self.$apply();
+      });
+    }
+  }
+</script>

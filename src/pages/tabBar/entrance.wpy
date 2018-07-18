@@ -1,0 +1,163 @@
+<style lang="less">
+  @import "../../asserts/style/commit";
+  @import "../../asserts/style/form";
+
+  .pp-commit .pp-commit-img{
+    background: #ffffff;
+  }
+  .pp-com-size {
+    height: ~"1007rpx";
+  }
+
+  .pp-commit .pp-com-form {
+    top: ~"90rpx";
+  }
+
+  .pp-commit-bg {
+    width: 100%;
+    height: ~"400rpx";
+  }
+
+  .pp-enter-code {
+    width: ~"500rpx";
+    margin: ~"160rpx" auto 0;
+    .pp-enter-img {
+      width: ~"500rpx";
+      height: ~"500rpx";
+      text-align: center;
+    }
+  }
+
+  .pp-icon-imgs {
+    position: absolute;
+    top: ~"20rpx";
+    z-index: 999;
+    margin-left: ~"-70rpx";
+    left: 50%;
+    .pp-icon-img {
+      width: ~"140rpx";
+      height: ~"140rpx";
+      border-radius: 50%;
+      border: ~"6rpx" solid #1A191E;
+    }
+  }
+
+  .pp-enter-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: ~"50rpx";
+    .pp-line {
+      width: ~"20rpx";
+      height: ~"4rpx";
+      border: ~"2rpx" solid #C1A17B;
+    }
+    .pp-info {
+      font-size: ~"32rpx";
+      height: ~"40rpx";
+      line-height: ~"40rpx";
+      color: #222222;
+      padding: 0 ~"34rpx";
+    }
+  }
+
+  .pp-location {
+    margin-top: ~"16rpx";
+    font-size: ~"28rpx";
+    height: ~"40rpx";
+    color: #757575;
+    line-height: ~"40rpx";
+    display: flex;
+    justify-content: center;
+  }
+
+  .pp-nav-location {
+    text-align: center;
+    margin-top: ~"26rpx";
+    .pp-nav-img {
+      width: ~"70rpx";
+      height: ~"70rpx";
+    }
+  }
+</style>
+<template>
+  <view class="pp-commit">
+    <view class="pp-commit-img">
+      <image src="../../asserts/images/bg_menjin.png" class="pp-commit-bg"></image>
+      <view class="pp-icon-imgs">
+        <!--<image src="../../asserts/images/icon.png" class="pp-icon-img"></image>-->
+        <image src="{{userInfo.avatarUrl}}" class="pp-icon-img"></image>
+      </view>
+      <view class="pp-com-form pp-com-size">
+        <view class="pp-enter-code">
+          <image class="pp-enter-img" src="http://lmstore.oss-cn-shenzhen.aliyuncs.com/suggesstions/1527671665496.jpg" style="background: #f4f4f4"></image>
+        </view>
+        <view class="pp-enter-info">
+          <view class="pp-line"></view>
+          <view class="pp-info">松湖智谷1号门 - 门禁</view>
+          <view class="pp-line"></view>
+        </view>
+        <view class="pp-location">
+          华宝一号D座708室
+        </view>
+        <view class="pp-nav-location" @tap="location">
+          <image src="../../asserts/images/nav.png" class="pp-nav-img"></image>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Entrance extends wepy.page {
+    config = {
+      navigationBarTitleText: '门禁'
+    };
+    components = {};
+
+    data = {
+      userInfo:{}
+    };
+
+    computed = {};
+
+    methods = {
+      location() {
+        wx.getSetting({
+          success(res) {
+            if (!res.authSetting['scope.userLocation']) {
+              wx.authorize({
+                // scope: 'scope.userLocation',
+                scope: 'scope.userInfo',
+                success() {
+                  // 用户已经同意打开地图功能
+                }
+              });
+            }
+          }
+        });
+        // wx.authorize({
+        //   scope: 'scope.userLocation',
+        //   success() {
+        //     // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+        //   }
+        // });
+        wx.chooseLocation({
+          success: function(res) {
+            console.log(res);
+          }
+        });
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.userInfo = this.$parent.globalData.ppInfo.get();
+    }
+  }
+</script>

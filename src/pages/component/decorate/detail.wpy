@@ -1,0 +1,153 @@
+<style lang="less">
+  @import "../../../asserts/style/list";
+
+  .ye {
+    color: #75AE36;
+  }
+
+  .re {
+    color: #EB606A;
+  }
+
+  .gray {
+    color: #CBCBCB;
+  }
+
+  .pp-app-info {
+    font-size: ~"28rpx";
+    color: #222222;
+    padding: ~"10rpx" ~"40rpx";
+  }
+
+</style>
+<template>
+  <repeat for="{{enterList}}" index="index" item="item">
+    <view class="pp-enter">
+      <view class="pp-enter-title">
+        <view class="pp-enter-time">
+          <view class="pp-time-name">
+            申请时间
+          </view>
+          <view class="pp-time-info">
+            {{item.createTime}}
+          </view>
+        </view>
+        <view
+          class="pp-enter-statue ye" wx:if="{{item.addInfo.next===0}}">
+          通过
+        </view>
+        <view
+          class="pp-enter-statue re" wx:else>
+          审核中
+        </view>
+      </view>
+      <view class="enter-content">
+        <view class="pp-enter-info">
+          <view class="pp-app-info">申请公司信息:</view>
+          <view class="pp-list">
+            <view class="pp-list-item">
+              公司名称
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.companyName}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              联系人
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.contact}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              手机号
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.phone}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              邮箱
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.email}}
+            </view>
+          </view>
+          <view class="pp-app-info" style="margin-top: 40rpx">装修公司信息:</view>
+          <view class="pp-list">
+            <view class="pp-list-item">
+              公司名称
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.decorationCompanyName}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              负责人
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.decorationCompanyContact}}
+            </view>
+          </view>
+          <view class="pp-list ">
+            <view class="pp-list-item">
+              手机号
+            </view>
+            <view class="pp-list-con">
+              {{item.addInfo.decorationCompanyPhone}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '装修-申请记录',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      enterList: []
+    };
+
+    computed = {};
+
+    methods = {
+      changeColor(item, index) {
+        this.enterList[index].state = !this.enterList[index].state;
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.getEnterList();
+    }
+
+    getEnterList() {
+      wx.showLoading({
+        title: '加载中'
+      });
+      api.getSerInfo({ userId: wx.getStorageSync('userId'), type: '装修申请' }).then((res) => {
+        this.enterList = res;
+        wx.hideLoading();
+        this.$apply();
+      });
+    }
+  }
+</script>

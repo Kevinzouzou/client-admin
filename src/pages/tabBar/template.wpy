@@ -1,0 +1,32 @@
+<style lang="less">
+
+</style>
+<template>
+  <web-view src="{{baseUrl}}"></web-view>
+  <!--<web-view src="https://yqdndev.vpclub.cn/api10003/html/viewDisplayActivity?id=b85f3b4acb074ece8cb7ea24f78df9fe&token=M2IyYjE1ZjYxMDY2NDVkOTg2OGE0NDg3NTc1NjQzY2Q="></web-view>-->
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '详情'
+    };
+    components = {};
+
+    data = {
+      baseUrl: ''
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad(option) {
+      this.baseUrl = option.url +'?id='+ option.id + '&token=' + wx.getStorageSync('token');
+    }
+  }
+</script>

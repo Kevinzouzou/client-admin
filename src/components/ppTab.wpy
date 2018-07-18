@@ -1,0 +1,68 @@
+<style lang="less">
+  @import "../asserts/style/tab";
+</style>
+<template>
+  <view class="pp-tab">
+    <view class="pp-navbar">
+      <repeat for="{{tabList}}" index="index" item="item">
+        <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+              @tap="tabClick">
+          <view class="pp-navbar__title">{{item.title}}</view>
+        </view>
+      </repeat>
+      <view class="pp-navbar__slider"
+            style="transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+    </view>
+
+    <view class="pp-tab__panel">
+      <view class="pp-tab__content" hidden="{{activeIndex != 0}}">
+        <slot name="pxz"></slot>
+      </view>
+      <view class="pp-tab__content" hidden="{{activeIndex != 1}}">
+        <slot name="ppz"></slot>
+      </view>
+      <view class="pp-tab__content" hidden="{{activeIndex != 2}}">
+        <slot name="pzz"></slot>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class _image extends wepy.component {
+
+    props = {
+      tabList: {
+        type: Object,
+        default: ['待处理', '已解决']
+      },
+      title: {
+        type: String,
+        default: ''
+      }
+    };
+    data = {
+      activeIndex: 0,
+      sliderOffset: 0,
+      sliderLeft: 0
+    };
+
+    computed = {};
+
+    methods = {
+      tabClick(e) {
+        this.sliderOffset = e.currentTarget.offsetLeft;
+        this.activeIndex = e.currentTarget.id;
+        this.$emit('tebClick', this.activeIndex);
+      }
+
+    };
+
+    events = {};
+
+    onLoad() {
+
+    }
+  }
+</script>

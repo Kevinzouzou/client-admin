@@ -1,0 +1,269 @@
+<style lang="less">
+  @import "../../asserts/style/tab";
+  @import "../../asserts/style/form";
+
+  page {
+    background: #FFFFFF;
+
+  }
+
+  .pp-tab {
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+
+  .pp-navbar {
+    width: ~"400rpx";
+    top: ~"80rpx";
+    border-top: none;
+    left: 50%;
+    margin-left: ~"-200rpx";
+    .pp-navbar__title {
+      font-size: ~"30rpx";
+    }
+  }
+
+  .pp-navbar__slider {
+    left: ~"80rpx";
+  }
+
+  .pp-navbar__slider {
+    background: #222222;
+  }
+
+  .pp-tab__panel {
+    margin-top: ~"240rpx";
+  }
+
+  .pp-btn90 {
+    margin-top: ~"90rpx";
+  }
+
+  .pp-info {
+    width: 100%;
+    position: fixed;
+    bottom: ~"35rpx";
+    left: 0;
+    text-align: center;
+    height: ~"32rpx";
+    font-size: ~"24rpx";
+    color: #CBCBCB;
+    line-height: ~"32rpx";
+  }
+
+  .pp-input-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width:  ~"560rpx";
+    .pp-input-img {
+      width: ~"44rpx";
+      height: ~"44rpx";
+    }
+    .pp-input-code {
+      text-align: right;
+      width:  ~"240rpx";
+      font-size: ~"28rpx";
+      color: #F53252;
+    }
+    .pp-code {
+      font-size: ~"28rpx";
+      color: #9B9B9B;
+    }
+  }
+</style>
+<template>
+  <view class="pp-tab">
+    <view class="pp-navbar">
+      <repeat for="{{tabList}}" index="index" item="item">
+        <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+              @tap="tabClick">
+          <view class="pp-navbar__title">{{item}}</view>
+        </view>
+      </repeat>
+      <view class="pp-navbar__slider"
+            style="transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+    </view>
+    <view class="pp-tab__panel">
+      <view class="pp-tab__content">
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">手机号</text>
+          </view>
+          <view class="pp-input pp-input-form">
+            <input placeholder="请输入手机号" placeholder-class="input" type="number" id="phone" value="{{params.phone}}"
+                   bindinput="inputChange" bindblur='blurInputPhone' maxlength="12"/>
+            <image src="../../../asserts/images/icon_shuru_shaochu.png" class="pp-input-img" mode="aspectFill"
+                   @tap="clickPhone"></image>
+          </view>
+        </view>
+        <view class="pp-cell pp-cells">
+          <view class="pp-label">
+            <text class="pp-label-text">验证码</text>
+          </view>
+          <view class="pp-input pp-input-form">
+            <input placeholder="请输入验证码" placeholder-class="input" type="number" id="code" value="{{params.code}}"
+                   bindinput="inputChange" bindblur='blurInputPhone' maxlength="12"/>
+            <view class="pp-input-code" @tap="clickVerify" hidden="{{times!==0}}">
+              获取验证码
+            </view>
+            <view class="pp-input-code pp-code" hidden="{{times===0}}">
+              {{times}}s
+            </view>
+          </view>
+        </view>
+        <view class="pp-cell pp-cells" hidden="{{!showPassword}}">
+          <view class="pp-label">
+            <text class="pp-label-text">密码</text>
+          </view>
+          <view class="pp-input">
+            <input bindinput="inputPwdChange" placeholder="请输入密码" placeholder-class="input" type="password" id="password"
+                   value="{{password}}" bindinput="inputPwdChange" maxlength="12"/>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class='pp-btn pp-btn90'>
+      <veiw @tap="login()" class="pp-btn-text {{isClick?'pp-color':''}}">登录</veiw>
+    </view>
+    <view class="pp-info">
+      <text>Copyright© 2018 松湖智谷 , All Right Reserved</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import util from '../../utils/util';
+  import api from '../../api/homeApi';
+
+  export default class Login extends wepy.page {
+    config = {
+      navigationBarTitleText: '绑定手机号'
+    };
+    components = {};
+
+    data = {
+      tabList: ['新账号', '已有帐号'],
+      showPassword: true,
+      activeIndex: 0,
+      sliderOffset: 0,
+      sliderLeft: 0,
+      params: {
+        phone: '',
+        code: '',
+      },
+      password:'',
+      interval: 0,
+      isClick: false,
+      isPhone: false,
+      times: 0,
+      code:''
+    };
+
+    computed = {};
+
+    methods = {
+      getUser(e) {
+        console.log(e.detail.userInfo);
+      },
+      //切换
+      tabClick(e) {
+        this.showPassword = !this.showPassword;
+        this.sliderOffset = e.currentTarget.offsetLeft;
+        this.activeIndex = e.currentTarget.id;
+      },
+      inputPwdChange(e){
+        this.password = e.detail.value;
+      },
+      inputChange(e) {
+        let key = e.currentTarget.id;
+        this.params[key] = e.detail.value;
+        this.isClick = util.isCanNext(this.params);
+      },
+      //提交记录
+      login() {
+        if (!this.isClick) return;
+        if (!this.isPhone) return;
+        let postData = {};
+        postData.password = this.password;
+        postData.phone = this.params.phone;
+        postData.msgCode = this.params.code;
+        postData.code = this.code;
+        postData.addInfo = this.$parent.globalData.ppInfo.get();
+        let _self = this;
+        console.log(postData);
+        api.register(postData).then((res) => {
+          wx.setStorageSync('token', res.token);
+          wx.setStorageSync('userId', res.userId);
+          wx.setStorageSync('staff',res.staff);
+          let ppInfo = res.addInfo;
+          ppInfo.phone = _self.params.phone;
+          _self.$parent.globalData.ppInfo.set(ppInfo);
+          util.toast("绑定成功！");
+          wx.navigateBack();
+          _self.$apply();
+        });
+      },
+      //手机输入框失去焦点
+      blurInputPhone() {
+        let phoneNumber = this.params.phone;
+        if (phoneNumber === '' || phoneNumber.length !== 11) {
+          util.toast('手机号不正确');
+          this.isPhone = false;
+          return;
+        }
+        this.isPhone = true;
+      },
+      //清空手机号信息
+      clickPhone() {
+        this.params.phone = '';
+      },
+      // 获取验证码
+      clickVerify() {
+        if (this.isPhone && this.times === 0) {
+          util.toast("验证码已发送");
+          let self = this;
+          this.times = 60;
+          api.sendCode({phone: this.params.phone}).then((res) => {
+            console.log(res);
+          });
+          this.interval = setInterval(() => {
+            self.times--;
+            self.$apply();
+            if (self.times === 0) {
+              clearInterval(self.interval);
+            }
+          }, 1000);
+        }else{
+          util.toast("请输入手机号");
+        }
+      }
+    };
+    passTo(){
+      wx.navigateBack({
+        delta: 1
+      })
+    };
+    events = {};
+    onUnload() {
+      if (this.interval === 0) return;
+      clearInterval(this.interval)
+    };
+
+    onLoad() {
+      console.log(wx.getStorageSync('userInfo'));
+      this.getCode();
+    };
+   getCode(){
+     let _self = this;
+     wx.login({
+       success: function (res) {
+         if (res.code) {
+           console.log("login code :"+ res.code);
+           _self.code = res.code;
+         }
+       }
+     });
+   }
+  }
+</script>

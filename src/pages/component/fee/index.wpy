@@ -1,0 +1,206 @@
+<style lang="less">
+  .pp-picker{
+    width: 100%;
+    height:  ~"120rpx";
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .pp-picker-item{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height:  ~"68rpx";
+      padding: 0  ~"40rpx";
+      .pp-picker-line{
+        width:  ~"260rpx";
+        height:  ~"68rpx";
+        background: #F4F4F4;
+        border-radius:  ~"4rpx";
+        line-height: ~"68rpx";
+        .pp-picker-check{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0  ~"20rpx";
+          font-size:  ~"24rpx";
+          color: #9B9B9B;
+          .pp-picker-img{
+            width: ~"20rpx";
+            height: ~"20rpx";
+          }
+        }
+      }
+      .pp-picker-lines{
+        width:  ~"10rpx";
+        color: #CBCBCB;
+        margin: 0  ~"6rpx";
+        text-align: center;
+      }
+      .pp-picker-btn{
+        margin-left:  ~"20rpx";
+        width:  ~"110rpx";
+        height:  ~"68rpx";
+        background: #C1A17B;
+        border-radius:  ~"4rpx";
+        line-height:  ~"68rpx";
+        text-align: center;
+        .pp-picker-text{
+          font-size:  ~"24rpx";
+          color: #FFFFFF;
+        }
+      }
+    }
+  }
+  .pp-fee{
+    margin-top:  ~"10rpx";
+    background: #ffffff;
+    .pp-fee-item{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width:  ~"710rpx";
+      height:  ~"98rpx";
+      margin-left:  ~"40rpx";
+      border-bottom:  ~"1rpx" solid #e7e7e7;
+      .pp-fee-time{
+        font-size: ~"30rpx";
+        color: #333333;
+      }
+      .pp-fee-more{
+        font-size:  ~"28rpx";
+        color: #EB606A;
+        display: flex;
+        align-items: center;
+        height:  ~"98rpx";
+        margin-right:  ~"40rpx";
+        .pp-fee-statue{
+          padding-right:  ~"30rpx";
+        }
+        .pp-fee-img{
+          width:  ~"20rpx";
+          height:  ~"20rpx";
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="pp-picker">
+    <view class="pp-picker-item">
+      <view class="pp-picker-line">
+        <picker mode="date" value="{{startDate}}" start="2018-01-01" end="2019-09-01" @change="bindStartDateChange">
+          <view class="pp-picker-check">
+            <view>{{!startDate? '选择日期':startDate}}
+            </view>
+            <view>
+              <image src="../../../asserts/images/icon_xialaxuanze.png" class="pp-picker-img"></image>
+            </view>
+          </view>
+        </picker>
+      </view>
+      <view class="pp-picker-lines">-</view>
+      <view class="pp-picker-line">
+        <picker mode="date" value="{{endDate}}" start="2018-01-01" end="2019-09-01" @change="bindEndDateChange">
+          <view class="pp-picker-check">
+            <view>{{!endDate? '选择日期':endDate}}
+            </view>
+            <view>
+              <image src="../../../asserts/images/icon_xialaxuanze.png" class="pp-picker-img"></image>
+            </view>
+          </view>
+        </picker>
+      </view>
+      <view class="pp-picker-btn">
+        <view class="pp-picker-text">查询</view>
+      </view>
+    </view>
+  </view>
+  <view class="pp-fee">
+    <repeat for="{{feeList}}" item="item" index="index">
+      <view class="pp-fee-item" @tap="feeDetail('{{item}}')">
+        <view class="pp-fee-time">
+          {{item.time}}
+        </view>
+        <view class="pp-fee-more">
+          <view class="pp-fee-statue">{{item.statue}}</view>
+          <_img :src.syn="moreImg" class="pp-fee-img"></_img>
+        </view>
+      </view>
+    </repeat>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import _img from '../../../components/ppImage';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '物业费查询',
+      navigationBarBackgroundColor:'#1C1C20',
+      navigationBarTextStyle:"white",
+    };
+    components = {
+      _img:_img,
+    };
+
+    data = {
+      feeList:[],
+      moreImg:'../../../asserts/images/jinru.png',
+      startDate: '',
+      endDate: '',
+    };
+
+    computed = {};
+
+    methods = {
+      //开始时间
+      bindStartDateChange(e) {
+        this.startDate = e.detail.value;
+      },
+      //结束时间
+      bindEndDateChange(e) {
+        this.endDate = e.detail.value;
+      },
+      feeDetail(item){
+        console.log(item);
+      }
+    };
+
+    events = {};
+
+
+    onLoad() {
+      this.getFeeList();
+    };
+    getFeeList(){
+      // api.getSerInfo({}).then((res) => {
+      //    console.log(res);
+      //   this.repairOrderList = util.getTypeInfo(res, '物业报修');
+      //   this.tempList = util.getTypeInfo(res, '物业报修');
+      //   this.$apply();
+      // });
+      this.feeList = [
+        {
+          id: 1,
+          time:'2018年3月',
+          statue:'未支付'
+        },{
+          id: 2,
+          time:'2018年4月',
+          statue:''
+        },{
+          id: 3,
+          time:'2018年5月',
+          statue:''
+        }
+      ]
+    }
+
+
+  }
+</script>

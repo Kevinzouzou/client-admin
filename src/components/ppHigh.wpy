@@ -1,0 +1,117 @@
+<style lang="less">
+  .pp-high {
+    width: 100%;
+    height: ~"620rpx";
+    background: #FFFFFF;
+    margin-top: ~"20rpx";
+    .pp-high-img {
+      margin-left: ~"20rpx";
+      padding-top: ~"20rpx";
+      width: ~"710rpx";
+      height: ~"350rpx";
+    }
+    .pp-high-title {
+      padding: 0 ~"30rpx";
+      width: ~"672rpx";
+      font-size: ~"32rpx";
+      color: #222222;
+      line-height: ~"32rpx";
+      height: ~"32rpx";
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-top:  ~"30rpx";
+      margin-bottom:  ~"10rpx";
+    }
+    .pp-high-time {
+      margin-top:  ~"5rpx";
+      padding: 0 ~"30rpx";
+      font-size: ~"24rpx";
+      color: #757575;
+      line-height: ~"30rpx";
+      height: ~"30rpx";
+      .pp-high-info {
+        color: #757575;
+      }
+    }
+    .pp-high-item {
+      padding: 0 ~"30rpx";
+      display: flex;
+      justify-content: space-between;
+      font-size: ~"28rpx";
+      color: #EB606A;
+      line-height: ~"28rpx";
+      height: ~"28rpx";
+      .pp-high-price {
+        color: #757575;
+        font-size: ~"24rpx";
+        .pp-high-info {
+          color: #757575;
+        }
+      }
+      .pp-high-size {
+        .pp-sign {
+          font-size: ~"24rpx";
+          color: #757575;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <repeat for="{{highList}}" item="item" index="index">
+    <view class="pp-high"  @tap="toDetail('{{item.detailUrl}}','{{item.id}}')">
+      <view class="pp-high-imgs">
+        <image src="{{item.thumbUrl}}" mode="aspectFit" class="pp-high-img"></image>
+      </view>
+      <view class="pp-high-title">
+        {{item.title}}
+      </view>
+      <view class="pp-high-time">
+        <text class="pp-high-info">时间:</text>
+        {{item.addInfo.timeStart}}-{{item.addInfo.timeEnd}}
+      </view>
+      <view class="pp-high-time">
+        <text class="pp-high-info">地点:</text>
+        {{item.addInfo.location}}
+      </view>
+      <view class="pp-high-time">
+        <text class="pp-high-info">人群:</text>
+        {{item.addInfo.person||'所有人'}}
+      </view>
+      <view class="pp-high-item">
+        <view class="pp-high-price">
+          <text class="pp-high-info">费用:</text>
+          {{item.addInfo.price || '免费'}}
+        </view>
+        <view class="pp-high-size">
+          {{item.addInfo.sign || 0}}人<text class="pp-sign">报名</text>
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class _image extends wepy.component {
+    props = {
+      highList: {
+        type: Array,
+        default: []
+      }
+    };
+    data = {};
+
+    events = {};
+
+    methods = {
+      toDetail(url, id){
+        this.$emit("toDetail", url, id);
+      }
+    };
+
+    onLoad() {
+    }
+  }
+</script>

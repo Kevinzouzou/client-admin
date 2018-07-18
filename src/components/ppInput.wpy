@@ -1,0 +1,95 @@
+<style lang="less">
+  .band-pwdfield {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #CBCBCB;
+    /*border-radius: 6px;*/
+  }
+  .band-pwdfield .band-pwdfield-input {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    font-size:  ~"1rpx";
+    color: transparent;
+    text-align: left;
+    display: none;
+  }
+  .band-pwdfield .band-pwdfield-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    width:   ~"80rpx";
+    height: ~"96rpx";
+    font-size: 16px;
+    background: #FFFFFF;
+    border-right: 1px solid #CBCBCB;
+  }
+  .band-pwdfield .band-pwdfield-item:last-child {
+    border: 0;
+  }
+</style>
+
+<template>
+  <view class="band-pwdfield" style="border-color:{{color}}" >
+    <input type="number" class="band-pwdfield-input" maxlength="{{sixdig ? 6 : 5}}"  bindblur="bindblurmethod" password="{{!display}}" @input="handleInput" focus="{{ifFocus}}" hidden="{{true}}"/>
+    <repeat for="{{sixdig ? 6 : 5}}" item="i" key="{{currentValue[i]}}">
+      <view class="band-pwdfield-item" style="border-color:{{color}};height:{{height}}" @tap="clickFocus">{{display ? currentValue[i] : secret[i]}}
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from "wepy";
+  //验证码方格输入框
+  export default class ppInput extends wepy.component {
+    props = {
+      display: {
+        type: Boolean,
+        default: true
+      },
+      sixdig: {
+        type: Boolean,
+        default: true
+      },
+      height: String,
+      color: String
+    };
+    data = {
+      currentValue: "",
+      secret: "",
+      ifFocus: false
+    };
+    watch = {
+      currentValue(val) {
+        if (val.length === 0) return (this.secret = "");
+        const l = val => (val === 1 ? "●" : "●" + l(val - 1));
+        this.secret = l(val.length);
+        this.$emit("value", val);
+      }
+    };
+    methods = {
+      bindblurmethod(e){
+        this.ifFocus = !this.ifFocus;
+      },
+      handleInput(e) {
+        this.currentValue = e.detail.value;
+        this.$emit("changeValue", this.currentValue);
+      },
+      //出发输入框获取焦点
+      clickFocus(){
+        if(this.ifFocus) return;
+        this.ifFocus = !this.ifFocus;
+
+      },
+    };
+  }
+</script>
+
+

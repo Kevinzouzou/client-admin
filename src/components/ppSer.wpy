@@ -1,0 +1,45 @@
+<style lang="less">
+  @import "../asserts/style/article";
+</style>
+<template>
+  <repeat for="{{serList}}" item="item" index="index">
+    <view class="pp-article" @tap="toDetail('{{item.detailUrl}}','{{item.id}}')">
+      <view class="pp-arc-imgs">
+        <image src="{{item.thumbUrl}}" class="pp-arc-img" mode="aspectFit"></image>
+      </view>
+      <view class="pp-arc-text">
+        <view class="pp-arc-content">
+          {{item.title}}
+        </view>
+        <view class="pp-arc-time">
+          {{item.createTime}}
+        </view>
+      </view>
+    </view>
+  </repeat>
+</template>
+<script>
+  import wepy from 'wepy';
+
+
+  export default class _image extends wepy.component {
+    props = {
+      serList: {
+        type: Array,
+        default: []
+      }
+    };
+    data = {};
+
+    events = {};
+
+    methods = {
+      toDetail(url, id) {
+        this.$emit('toDetail', url, id);
+      }
+    };
+
+    onLoad() {
+    }
+  }
+</script>

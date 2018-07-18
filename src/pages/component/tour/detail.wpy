@@ -1,0 +1,47 @@
+<style lang="less">
+
+
+</style>
+<template>
+  <ppTour :tourList.sync="tourList"></ppTour>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppTour from '../../../components/ppTour';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '申请记录',
+      navigationBarBackgroundColor:'#1C1C20',
+      navigationBarTextStyle:"white",
+    };
+    components = {
+      ppTour:ppTour
+    };
+
+    data = {
+      tourList: []
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+
+    onLoad() {
+      this.getEnterList();
+    }
+
+    getEnterList() {
+      api.getSerInfo({userId: wx.getStorageSync('userId'), type:'放行申请'}).then((res)=>{
+        this.tourList = res;
+        this.$apply();
+      });
+    }
+  }
+</script>

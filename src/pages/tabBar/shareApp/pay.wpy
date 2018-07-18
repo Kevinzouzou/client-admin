@@ -1,0 +1,182 @@
+<style lang="less">
+  .pay {
+    height: ~"396rpx";
+    background: #FFFFFF;
+    .price {
+      height: ~"260rpx";
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      .price-title {
+        font-size: ~"28rpx";
+        color: #222222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .price-line {
+          display: inline-block;
+          width: ~"30rpx";
+          height: ~"4rpx";
+          background: #C1A17B;
+          margin: 0 ~"12rpx";
+        }
+      }
+      .price-num {
+        padding-top: ~"20rpx";
+        font-size: ~"64rpx";
+        color: #EB606A;
+      }
+    }
+    .order {
+      display: flex;
+      flex-direction: column;
+      padding: ~"30rpx";
+      font-size: ~"28rpx";
+      color: #333333;
+    }
+  }
+
+  .pay-method {
+    margin-top: ~"20rpx";
+    height: ~"80rpx";
+    font-size: ~"28rpx";
+    background: #FFFFFF;
+    padding: 0 ~"30rpx";
+    line-height: ~"80rpx";
+    color: #333333
+  }
+
+  .pay-way {
+    background: #FFFFFF;
+    padding: 0 ~"30rpx";
+    height: ~"100rpx";
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: ~"1rpx" solid #e7e7e7;
+    .pay-img {
+      width: ~"32rpx";
+      height: ~"32rpx";
+    }
+    .pay-info {
+      display: flex;
+      align-items: center;
+      font-size: ~"28rpx";
+      color: #333333;
+      .info-img {
+        width: ~"40rpx";
+        height: ~"40rpx";
+        padding-right: ~"30rpx";
+      }
+      .money {
+        font-size: ~"28rpx";
+        color: #EB606A;
+      }
+    }
+    .no-choose{
+      color: #9B9B9B;
+    }
+  }
+
+  .btn {
+    width: ~"690rpx";
+    height: ~"80rpx";
+    position: fixed;
+    bottom: ~"30rpx";
+    left: ~"30rpx";
+    background: #EB606A;
+    border-radius: ~"4rpx";
+    text-align: center;
+    color: #FFFFFF;
+    line-height: ~"80rpx";
+    font-size: ~"32rpx";
+  }
+</style>
+<template>
+  <view class="pay">
+    <view class="price">
+      <view class="price-title">
+        <text class="price-line"></text>
+        <text>应付金额</text>
+        <text class="price-line"></text>
+      </view>
+      <view class="price-num">¥ 15.00</view>
+    </view>
+    <view class="order">
+      <text>订单信息:</text>
+      <text>大会议室 60㎡</text>
+      <text>适合宣讲会预约时间：2018-04-23 上午</text>
+    </view>
+  </view>
+  <view class="pay-method">
+    选择支付方式
+  </view>
+  <!--钱包没有余额-->
+  <view class="pay-way" >
+    <view class="pay-info no-choose">
+      <image src="/asserts/images/icon_yikatong_hui.png" class="info-img"></image>
+      <text>园区一卡通</text>
+      <text>（余额：￥0）</text>
+    </view>
+    <image src="/asserts/images/icon_bukexuan.png" class="pay-img"></image>
+  </view>
+
+  <view class="pay-way" @tap="choose">
+    <view class="pay-info">
+      <image src="/asserts/images/icon_zhifu_yqykt.png" class="info-img"></image>
+      <text>园区一卡通</text>
+      <text class="money">（余额：￥2100.99）</text>
+    </view>
+    <image src="{{!showCheck?'/asserts/images/icon_shenpi_tongguo.png':'/asserts/images/icon_weixuanzhong.png'}}"
+           class="pay-img"></image>
+  </view>
+  <view class="pay-way" @tap="choose">
+    <view class="pay-info">
+      <image src="/asserts/images/icon_zhifu_weixinzhifu.png" class="info-img"></image>
+      <text>微信支付</text>
+    </view>
+    <image src="{{showCheck?'/asserts/images/icon_shenpi_tongguo.png':'/asserts/images/icon_weixuanzhong.png'}}"
+           class="pay-img"></image>
+  </view>
+  <view class="btn">
+    立即支付
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Apply extends wepy.page {
+    config = {
+      navigationBarTitleText: '支付',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      showCheck: true
+    };
+
+    computed = {};
+
+    methods = {
+      //切换支付方式
+      choose() {
+        this.showCheck = !this.showCheck;
+      }
+    };
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+
+  }
+</script>

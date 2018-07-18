@@ -1,0 +1,270 @@
+<style lang="less">
+  page {
+    border-top: ~"1rpx" solid #e7e7e7;
+  }
+
+  .pp-group {
+    background: #ffffff;
+    .pp-group-item {
+      height: ~"140rpx";
+      padding-left: ~"20rpx";
+      display: flex;
+      align-items: center;
+      border-bottom: ~"1rpx" solid #e7e7e7;
+      .pp-group-icon {
+        width: ~"90rpx";
+        height: ~"90rpx";
+      }
+      .pp-text {
+        margin-left: ~"20rpx";
+        font-size: ~"32rpx";
+        color: #4A4A4A;
+      }
+    }
+  }
+
+  .pp-person {
+    /*margin: 0  ~"30rpx";*/
+    margin-top: ~"100rpx";
+    margin-bottom: ~"160rpx";
+    .pp-letter {
+      width: 100%;
+      height: ~"40rpx";
+      padding-left: ~"30rpx";
+      font-size: ~"30rpx";
+      color: #2B2B2B;
+      line-height: ~"40rpx";
+    }
+    .pp-person-info {
+      width: 100%;
+      background: #ffffff;
+      padding: 0 ~"30rpx";
+      .pp-person-item {
+        width: 100%;
+        height: ~"90rpx";
+        display: flex;
+        align-items: center;
+        border-bottom: ~"1rpx" solid #e7e7e7;
+        justify-content: space-between;
+        .pp-person-name {
+          font-size: ~"28rpx";
+          color: #2B2B2B;
+        }
+        .pp-person-icon {
+          width: ~"40rpx";
+          height: ~"40rpx";
+        }
+      }
+      .pp-person-item:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .pp-search {
+    width: 100%;
+    height: ~"100rpx";
+    background: #FFFFFF;
+    position: fixed;
+    top: 0;
+    border-top: ~"1rpx" solid #e7e7e7;
+    .pp-search-bar {
+      width: ~"710rpx";
+      height: ~"58rpx";
+      margin: auto;
+      background: #F4F4F4;
+      border-radius: ~"4rpx";
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      .pp-search-icon {
+        margin-left: ~"27rpx";
+        margin-right: ~"16rpx";
+        width: ~"36rpx";
+        height: ~"36rpx";
+      }
+    }
+  }
+
+  .pp-footer {
+    height: ~"110rpx";
+    width: ~"750rpx";
+    position: fixed;
+    text-align: center;
+    background: #f4f4f4;
+    z-index: 999;
+    bottom: 0;
+    left: 0;
+    .pp-btn {
+      margin: 0 auto;
+      width: ~"690rpx";
+      height: ~"80rpx";
+      background: #CCCCCC;
+      border-radius: ~"4rpx";
+      font-size: ~"32rpx";
+      line-height: ~"80rpx";
+      color: #FFFFFF;
+    }
+    .pp-btn-color {
+      background: #C1A17B;
+    }
+  }
+</style>
+<template>
+  <view class="pp-search">
+    <view class="pp-search-bar">
+      <image src="../../../asserts/images/icon_sousuokuang_sousuo.png" class="pp-search-icon" mode="aspectFill"></image>
+      <input bindinput="bindSearch" placeholder="搜索" placeholder-class="input"/>
+    </view>
+  </view>
+  <view class="pp-person">
+    <repeat for="{{list}}" item="item" index="index">
+      <view class="pp-letter">
+        <text>{{item.letter}}</text>
+      </view>
+      <view class="pp-person-info">
+        <repeat for="{{item.data}}" item="childItem" index="childIndex">
+          <view class="pp-person-item" @tap="clickCheck('{{index}}','{{childIndex}}','{{childItem}}')">
+            <view class="pp-person-name">{{childItem.name}}</view>
+            <view>
+              <image
+                src="{{childItem.isCheck?'../../../asserts/images/icon_weixuanzhong.png':'../../../asserts/images/icon_xuanzhong.png'}}"
+                class="pp-person-icon"></image>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </repeat>
+  </view>
+  <view class="pp-footer">
+    <view class="pp-btn {{showTag?'pp-btn-color':''}}" @tap="toSubmit()">
+      完成
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import pinYinUtil from '../../../utils/pinYinUtil';
+
+
+  export default class Contact extends wepy.page {
+    config = {
+      navigationBarTitleText: '企业选择'
+    };
+    components = {};
+
+    data = {
+      list: [],
+      tempArrayList: [],
+      color: '#989898',
+      showTag: false,
+      type: '',
+      msg: '',
+      ChooseInfo: {}
+    };
+
+    computed = {};
+
+    methods = {
+      //输入框监听
+      bindSearch(e) {
+        let key = e.detail.value;
+        this.filterSearch(key)
+      },
+      clickCheck(index, childIndex, childItem) {
+        this.list.forEach((item)=>{
+          item.data.forEach((n)=>{
+            n.isCheck = true;
+          })
+        });
+        this.list[index].data[childIndex].isCheck = !this.list[index].data[childIndex].isCheck;
+        this.showTag = true;
+        this.ChooseInfo = childItem;
+      },
+      //返回
+      toSubmit() {
+        if (!this.showTag) return;
+        console.log(this.ChooseInfo);
+        wx.setStorageSync('company', this.ChooseInfo);
+        this.$navigate('./certificate')
+      }
+
+    };
+
+    events = {};
+
+    onLoad(option) {
+      this.type = option.type;
+      this.msg = option.msg;
+      this.getList();
+    }
+
+    getList() {
+      let _self = this;
+      api.queryCompany({parkId: wx.getStorageSync('parkId')}).then((res) => {
+        _self.tempArrayList = _self.pySegSort(res);
+        _self.list = _self.tempArrayList;
+        _self.$apply();
+      })
+    }
+
+    pySegSort(arr) {
+      let letters = 'abcdefghjklmnopqrstwxyz*'.split('');
+      let segs = [];
+      letters.forEach((letter) => {
+        let currItem = {letter: letter.toUpperCase(), data: []};
+        arr.forEach(item => {
+          item.isCheck = true;
+          let pinyin = pinYinUtil.convertPinyin(item.name[0]);
+          if (pinyin[0] === letter) {
+            currItem.data.push(item);
+          } else {
+            let reg = new RegExp('[a-zA-Z]');
+            if (letter === '*' && !reg.test(pinyin[0])) {
+              currItem.data.push(item);
+            }
+          }
+        });
+        if (currItem.data.length !== 0) {
+          segs.push(currItem)
+        }
+      });
+
+      return segs;
+    };
+
+    filterSearch(key) {
+      let _tempList =[];
+      if(key===null||key===''){
+        this.list = this.tempArrayList;
+        return
+      }
+      //把搜索的key转换为拼音,字符
+      let letterKey = pinYinUtil.convertPinyin(key).toUpperCase();
+      //过滤掉不符合条件的字母组
+      this.tempArrayList.forEach(item => {
+        let tempItem ={letter: item.letter, data: []};
+
+        //过滤掉符合条件组里面，不符合条件的名字
+        item.data.forEach(childItem => {
+          let pinyin = pinYinUtil.convertPinyin(childItem.name).toUpperCase();
+          if (pinyin.indexOf(letterKey) !== -1) {
+            tempItem.data.push(childItem)
+          }
+        });
+        //如果data.lenth>0，代表有满足条件的值
+        if(tempItem.data.length>0){
+          _tempList.push(tempItem)
+        }
+      });
+      this.list =_tempList;
+    }
+
+  }
+</script>

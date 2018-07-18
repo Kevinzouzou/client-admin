@@ -1,0 +1,156 @@
+<style lang="less">
+  .ser {
+    background: #FFFFFF;
+    .ser-item {
+      display: flex;
+      align-items: center;
+      height: ~"98rpx";
+      font-size: ~"30rpx";
+      color: #333333;
+      margin-left: ~"40rpx";
+      .ser-item-title {
+        width: ~"160rpx";
+      }
+    }
+    .bb {
+      border-bottom: ~"1rpx" solid #e7e7e7;
+    }
+  }
+
+  .mt20 {
+    margin-top: ~"20rpx";
+  }
+
+  .area {
+    height: ~"635rpx";
+    padding: 0 ~"40rpx";
+    background: #FFFFFF;
+    margin-top: ~"20rpx";
+    .area_title {
+      padding-top: ~"35rpx";
+      font-size: ~"30rpx";
+      color: #333333;
+    }
+    textarea {
+      padding-top: ~"20rpx";
+    }
+  }
+
+  .textarea {
+    font-size: ~"30rpx";
+    color: #9B9B9B;
+  }
+
+  .btn {
+    width: ~"690rpx";
+    height: ~"80rpx";
+    background: #C1A17B;
+    border-radius: ~"4rpx";
+    text-align: center;
+    margin: ~"30rpx" auto 0;
+    font-size: ~"32rpx";
+    line-height: ~"80rpx";
+    color: #FFFFFF;
+  }
+</style>
+<template>
+  <view class="ser">
+    <view class="ser-item bb">
+      <text class="ser-item-title">服务地点</text>
+      <text>{{staff.addInfo.enterpriseLocation}}</text>
+    </view>
+    <view class="ser-item bb">
+      <text class="ser-item-title">联系人</text>
+      <text>{{staff.name}}</text>
+    </view>
+    <view class="ser-item">
+      <text class="ser-item-title">联系电话</text>
+      <text>{{staff.phone}}</text>
+    </view>
+  </view>
+
+  <view class="ser mt20">
+    <view class="ser-item">
+      <text class="ser-item-title">服务类型</text>
+      <text>{{info.addInfo.itemType}}</text>
+    </view>
+  </view>
+  <view class="area">
+    <view class="area_title">备注留言</view>
+    <textarea placeholder="点击输入" placeholder-class="textarea" maxlength="140" bindinput="inputChange" id="question"/>
+  </view>
+  <view class="btn" @tap="submitSer">
+    提交申请
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Entrance extends wepy.page {
+    config = {
+      navigationBarTitleText: '拼单',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      staff: {},
+      remark: '',
+      info: {}
+    };
+
+    computed = {};
+
+    methods = {
+      //输入框改变
+      inputChange(e) {
+        this.remark = e.detail.value;
+      },
+      //提交拼单申请
+      submitSer() {
+        let _self = this;
+        let postData = {};
+        let addInfo = {};
+        addInfo.subtype = this.info.addInfo.subtype;
+        addInfo.itemType = this.info.addInfo.itemType;
+        addInfo.companyName = this.staff.addInfo.enterpriseName;
+        addInfo.contact = this.staff.name;
+        addInfo.phone = this.staff.phone;
+        addInfo.location = this.staff.addInfo.enterpriseLocation;
+        addInfo.area = this.staff.addInfo.enterpriseArea;
+        addInfo.remark = this.remark;
+        postData.userId = wx.getStorageSync('userId');
+        postData.stage = '待拼单';
+        postData.type = '家政服务';
+        postData.addInfo = addInfo;
+        wx.showModal({
+          content: '确认要发起拼单？',
+          success: function(res) {
+            if (res.confirm) {
+              _self.addSerInfo(postData);
+            }
+          }
+        });
+      }
+    };
+
+    addSerInfo(data) {
+      api.addSerInfo(data).then(res => {
+        util.toast('提交成功!');
+        wx.navigateBack();
+      });
+    }
+
+    events = {};
+
+
+    onLoad(params) {
+      this.staff = wx.getStorageSync('staff');
+      this.info = JSON.parse(params.item);
+    }
+  }
+</script>

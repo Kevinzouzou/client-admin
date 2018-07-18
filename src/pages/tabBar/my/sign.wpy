@@ -1,0 +1,204 @@
+<style lang="less">
+  @import "../../../asserts/style/tab";
+
+  .pp-high {
+    width: 100%;
+    border-top: ~"1rpx" solid #e7e7e7;
+    background: #FFFFFF;
+    padding: ~"40rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    margin-top: ~"10rpx";
+    .pp-high-info {
+      font-size: ~"30rpx";
+      color: #222222;
+      line-height: ~"46rpx";
+    }
+    .pp-high-time {
+      font-size: ~"24rpx";
+      color: #757575;
+      line-height: ~"30rpx";
+      height: ~"30rpx";
+    }
+    .mgTop {
+      margin-top: ~"20rpx";
+    }
+  }
+
+  .pp-high-sign {
+    font-size: ~"24rpx";
+    line-height: ~"92rpx";
+    color: #222222;
+    background: #FFFFFF;
+    height: ~"92rpx";
+    padding: 0 ~"40rpx";
+  }
+
+  .pp-finance {
+    background: #FFFFFF;
+    padding: ~"40rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    margin-top: ~"10rpx";
+    .pp-f-title {
+      font-size: ~"30rpx";
+      color: #222222;
+      line-height: ~"46rpx";
+      height: ~"46rpx";
+    }
+    .pp-f-content {
+      margin-top: ~"10rpx";
+      font-size: ~"24rpx";
+      color: #333333;
+      line-height: ~"32rpx";
+    }
+  }
+
+  .pp-business {
+    background: #FFFFFF;
+    padding: ~"40rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    margin-top: ~"10rpx";
+    .pp-b-title {
+      font-size: ~"30rpx";
+      color: #222222;
+      line-height: ~"46rpx";
+      height: ~"46rpx";
+    }
+    .pp-b-content {
+      margin-top: ~"10rpx";
+      font-size: ~"24rpx";
+      color: #757575;
+      line-height: ~"30rpx";
+      height: ~"30rpx";
+    }
+  }
+
+</style>
+<template>
+  <view class="pp-tab">
+    <view class="pp-navbar">
+      <repeat for="{{tabList}}" index="index" item="item">
+        <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+              @tap="tabClick">
+          <view class="pp-navbar__title" @tap="tabClickItem('{{item.type}}')">{{item.title}}</view>
+        </view>
+      </repeat>
+      <view class="pp-navbar__slider"
+            style="transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+    </view>
+    <view class="pp-tab__panel">
+      <view class="pp-tab__content" hidden="{{activeIndex != 0}}">
+        <repeat for="{{highList}}" index="index" item="item">
+          <view class="pp-high" @tap="toDetail('{{item.detailUrl}}')">
+            <view class="pp-high-info">
+              {{item.title}}
+            </view>
+            <view class="pp-high-time mgTop">
+              时间:{{item.addInfo.timeStart}}-{{item.addInfo.timeEnd}}
+            </view>
+            <view class="pp-high-time">
+              地点:{{item.addInfo.location}}
+            </view>
+          </view>
+          <view class="pp-high-sign">
+            报名时间{{item.createTime}}
+          </view>
+        </repeat>
+      </view>
+      <view class="pp-tab__content" hidden="{{activeIndex != 1}}">
+        <repeat for="{{highList}}" index="index" item="item">
+          <view class="pp-finance" @tap="toDetail('{{item.detailUrl}}')">
+            <view class="pp-f-title">
+              {{item.title}}
+            </view>
+            <view class="pp-f-content">
+              {{item.content}}
+            </view>
+          </view>
+          <view class="pp-high-sign">
+            申请时间{{item.createTime}}
+          </view>
+        </repeat>
+      </view>
+      <view class="pp-tab__content" hidden="{{activeIndex != 2}}">
+        <repeat for="{{highList}}" index="index" item="item">
+          <view class="pp-business" @tap="toDetail('{{item.detailUrl}}')">
+            <view class="pp-b-title">
+              政治解读
+            </view>
+            <view class="pp-b-content">
+              预约时间{{item.time}}
+            </view>
+          </view>
+          <view class="pp-high-sign">
+            申请时间{{item.createTime}}
+          </view>
+        </repeat>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+
+
+  export default class _image extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的报名'
+    };
+    data = {
+      tabList: [{
+        id: 0,
+        title: '高端活动',
+        type: 'USER_IN_ADVANCED_ACTIVITY'
+      }, {
+        id: 1,
+        title: '金融服务',
+        type: 'USER_IN_FINANCE'
+      }, {
+        id: 2,
+        title: '商务服务',
+        type: 'USER_IN_COMMERCE'
+      }
+      ],
+      activeIndex: 0,
+      sliderOffset: 0,
+      sliderLeft: 0,
+      highList: [],
+      financeList: [],
+      businessList: []
+    };
+
+    computed = {};
+
+    methods = {
+      //点击查看详情
+      toDetail(type) {
+        this.$navigate('../../component/template', { url: type });
+      },
+      //点击tab切换
+      tabClick(e) {
+        this.sliderOffset = e.currentTarget.offsetLeft;
+        this.activeIndex = e.currentTarget.id;
+      },
+      tabClickItem(type) {
+        this.getList(type);
+      }
+
+    };
+
+    events = {};
+
+    onLoad() {
+      this.getList(this.tabList[0].type);
+    }
+
+    getList(type) {
+      let _self = this;
+      api.getCollectAndSignList({ type: type }).then((res) => {
+        _self.highList = res;
+        _self.$apply();
+      });
+    }
+  }
+</script>

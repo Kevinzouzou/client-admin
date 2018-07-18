@@ -1,0 +1,79 @@
+<style lang="less">
+  @import "../../../asserts/style/tab";
+  .pp-navbar__slider {
+    left: ~"170rpx";
+  }
+</style>
+<template>
+  <view class="pp-tab">
+    <view class="pp-navbar">
+      <repeat for="{{tabs}}" index="index" item="item">
+        <view id="{{index}}" class="pp-navbar__item {{activeIndex == index ? 'pp-bar__item_on' : ''}}"
+              @tap="tabClick">
+          <view class="pp-navbar__title">{{item.addInfo.itemType}}</view>
+        </view>
+      </repeat>
+      <view class="pp-navbar__slider"
+            style="transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+    </view>
+    <view class="pp-tab__panel">
+      <view class="pp-tab__content">
+        <ppList :list.sync="list"></ppList>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ppList from '../../../components/ppHomeList'
+  import api from '../../../api/homeApi'
+
+  export default class Entrance extends wepy.page {
+    config = {
+      navigationBarTitleText: '搬迁服务',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      ppList:ppList
+    };
+
+    data = {
+      tabs:[],
+      activeIndex: 0,
+      sliderOffset: 0,
+      sliderLeft: 0,
+      list:{}
+    };
+
+    computed = {};
+
+    methods = {
+      //切换选项卡
+      tabClick(e) {
+        this.sliderOffset = e.currentTarget.offsetLeft;
+        this.activeIndex = e.currentTarget.id;
+        this.list = this.tabs[this.activeIndex];
+      },
+    };
+
+    events = {};
+
+
+    onLoad() {
+      wx.showLoading({ title: '正在加载中' });
+      this.getList();
+    };
+
+    getList() {
+      let _self = this;
+      api.queryInfo({ type: '家政服务', subtype: '搬迁服务' }).then((res) => {
+        wx.hideLoading();
+        _self.tabs = res;
+        _self.list = _self.tabs[0];
+        _self.$apply();
+      });
+    }
+  }
+</script>

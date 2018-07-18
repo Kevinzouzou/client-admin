@@ -1,0 +1,144 @@
+<style lang="less">
+  page {
+    background: #FFFFFF;
+  }
+
+  .img {
+    width: ~"750rpx";
+    height: ~"370rpx";
+  }
+
+  .intro {
+    height: ~"97rpx";
+    padding: 0 ~"30rpx";
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: ~"32rpx";
+    color: #222222;
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    .intro-state {
+      color: #75AE36;
+    }
+  }
+
+  .content {
+    padding: ~"30rpx" ~"30rpx" ~"224rpx" ~"30rpx";
+    border-bottom: ~"1rpx" solid #e7e7e7;
+    .content-item {
+      font-size: ~"24rpx";
+      color: #333333;
+      line-height: ~"32rpx";
+    }
+    .pt40{
+      padding-top: ~"40rpx";
+    }
+  }
+  .contact{
+    padding: 0 ~"30rpx";
+    height: ~"80rpx";
+    line-height: ~"80rpx";
+    font-size: ~"20rpx";
+    color: #4A4A4A;
+  }
+  .footer {
+    display: flex;
+    width: ~"750rpx";
+    height: ~"108rpx";
+    position: fixed;
+    bottom: 0;
+    align-items: center;
+    text-align: center;
+    .footer-item {
+      width: ~"375rpx";
+      height: ~"108rpx";
+      line-height: ~"108rpx";
+      flex: 1;
+      background: #FFFFFF;
+      font-size: ~"28rpx";
+      color: #222222;
+    }
+    .footer-item:last-child {
+      background: #EB606A;
+      color: #FFFFFF;
+    }
+    .footer-item:first-child {
+      border-top: ~"1rpx" solid #e7e7e7;
+    }
+  }
+</style>
+<template>
+  <image src="{{info.addInfo.images[0]}}" class="img"></image>
+  <view class="intro">
+    <text>{{info.addInfo.intro}}</text>
+    <text class="intro-state">已预约</text>
+  </view>
+  <view class="content">
+    <view class="content-item">
+      <text>时间:</text>
+    </view>
+    <view class="content-item">
+      <text>地点:</text>
+    </view>
+    <view class="content-item pt40">
+      <text>申请人:</text>
+    </view>
+    <view class="content-item">
+      <text>手机号:</text>
+    </view>
+    <view class="content-item">
+      <text>付款:</text>
+    </view>
+    <view class="content-item pt40">
+      <text>交易时间:</text>
+    </view>
+    <view class="content-item">
+      <text>交易单号:</text>
+    </view>
+  </view>
+  <!--联系人-->
+  <view class="contact">
+    咨询电话：0755-83759222
+  </view>
+  <!--底部按钮-->
+  <view class="footer">
+    <view class="footer-item">取消预约</view>
+    <view class="footer-item">去支付</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../../../api/homeApi';
+  import util from '../../../utils/util';
+
+  export default class Apply extends wepy.page {
+    config = {
+      navigationBarTitleText: '预约详情',
+      navigationBarBackgroundColor: '#1C1C20',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    data = {
+      info: {}
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad() {
+      let _self = this;
+      api.shareList({ type: '会议室' }).then((res) => {
+        _self.info = res[0];
+        _self.$apply();
+      });
+
+    }
+
+
+  }
+</script>
